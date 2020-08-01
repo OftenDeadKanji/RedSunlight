@@ -70,6 +70,14 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -91,8 +99,18 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PostBuildEvent>
+      <Command>
+      </Command>
+    </PostBuildEvent>
+    <PostBuildEvent>
+      <Message>
+      </Message>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Shaders\shader.h" />
+    <ClInclude Include="src\2D\Primitives\primitives.h" />
     <ClInclude Include="src\Core\config.h" />
     <ClInclude Include="src\Core\PCH\pch.h" />
     <ClInclude Include="src\Core\status.h" />
@@ -100,6 +118,8 @@
     <ClInclude Include="src\Window\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Shaders\shader.cpp" />
+    <ClCompile Include="src\2D\Primitives\primitives.cpp" />
     <ClCompile Include="src\Core\PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>

@@ -6,8 +6,8 @@ namespace RedSunlight {
 	Window::Window(int width, int height, const char* title, WindowMode mode)
 		: m_window_width(width), m_window_height(height), m_title(title), m_mode(mode), m_window(NULL), m_viewport_x(0), m_viewport_y(0), m_viewport_width(width), m_viewport_height(height)
 	{
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
 		if (mode == WindowMode::WINDOWED) {
@@ -66,10 +66,12 @@ namespace RedSunlight {
 
 		glViewport(m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height);
 	}
+
 	void Window::drawWindowContent()
 	{
 		glfwSwapBuffers(m_window);
 	}
+
 	void Window::clearToColor(int r, int g, int b)
 	{
 		glClearColor(r / 255.f, g / 255.f, b / 255.f, 1.0f);

@@ -18,6 +18,7 @@ namespace RedSunlight {
 		void setViewport(int newX, int newY, int newWidth, int newHeight);
 		void drawWindowContent();
 		void clearToColor(int r, int g, int b);
+
 	private:
 		int m_window_width, m_window_height;
 		int m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;
