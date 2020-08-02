@@ -14,6 +14,10 @@ namespace RedSunlight {
 		GLuint m_VBO, m_VAO;
 		Shader* m_shader;
 		glm::vec4 m_color;
+
+		glm::mat4 m_proj;
+		glm::mat4 m_view;
+		glm::mat4 m_model;
 	};
 
 	class RED_API Traingle2D

@@ -15,6 +15,7 @@ public:
 	void useShader();
 
 	void setVec4f(const std::string& name, glm::vec4) const;
+	void setMat4(const std::string& name, glm::mat4) const;
 private:
 	unsigned int createShader(const char* path, GLenum shaderType, ShaderCreationMethod method);
 	GLint getUniformLocation(const std::string& name) const;

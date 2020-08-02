@@ -5,6 +5,7 @@
 #include <stdlib.h>
 #include <fstream>
 #include <unordered_map>
+#include <utility>
 
 #include "../../OtherLibs/headers/glad/glad.h"
 #include "../../OtherLibs/headers/KHR/khrplatform.h"
@@ -15,3 +16,4 @@
 
 #include "../config.h"
 #include "../status.h"
+#include "../globalInformation.h"

@@ -13,7 +13,7 @@ int main()
 	RedSunlight::Window okno(1600, 900, "Testujemy", RedSunlight::WindowMode::WINDOWED);
 
 	//testowanie prymitywa - trójk¹t
-	RedSunlight::Traingle2D trojkat(glm::vec2(-0.9, 0.3), glm::vec2(-0.8, 0.5), glm::vec2(-0.7, 0.3), glm::vec4(128, 0, 255, 255));
+	RedSunlight::Traingle2D trojkat(glm::vec2(0, 0), glm::vec2(200, 400), glm::vec2(300,200), glm::vec4(128, 0, 255, 255));
 	RedSunlight::Rectangle2D prostokat(glm::vec2(-0.6, 0.5), glm::vec2(-0.3, 0.3), glm::vec4(255, 127, 39, 255));
 
 	for ever

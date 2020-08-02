@@ -5,23 +5,28 @@ namespace RedSunlight {
 
 	#pragma region Primitive
 	Primitive::Primitive(glm::vec4 color)
-		: m_color(glm::vec4(color.x / 255.f, color.y / 255.f, color.z / 255.f, color.w / 255.f))
+		: m_color(glm::vec4(color.x / 255.f, color.y / 255.f, color.z / 255.f, color.w / 255.f)),
+		m_proj(glm::mat4(1.0f)), m_view(glm::mat4(1.0f)), m_model(glm::mat4(1.0f))
 	{
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
 
 		const char* vertexShader = R"(
-			#version 330 core  
+			#version 400 core  
 			layout (location = 0) in vec3 position;
 			
+			uniform mat4 model;
+			uniform mat4 view;
+			uniform mat4 projection;
+
 			void main()  
 			{  
-			    gl_Position = vec4(position.x, position.y, position.z, 1.0);  
+			    gl_Position = projection * view * model * vec4(position, 1.0);  
 			}
 		)";
 
 		const char* fragmentShader = R"(
-			#version 330 core 
+			#version 400 core 
 
 			uniform vec4 shapeColor;
 			out vec4 color;
@@ -33,6 +38,11 @@ namespace RedSunlight {
 		)";
 
 		m_shader = new Shader(vertexShader, ShaderCreationMethod::SHADER_SOURCE_CODE, fragmentShader, ShaderCreationMethod::SHADER_SOURCE_CODE);
+
+		auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
+
+		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);
+		m_view = glm::translate(m_view, glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 
 	Primitive::~Primitive()
@@ -72,6 +82,9 @@ namespace RedSunlight {
 	{
 		m_shader->useShader();
 		m_shader->setVec4f("shapeColor", m_color);
+		m_shader->setMat4("model", m_model);
+		m_shader->setMat4("view", m_view);
+		m_shader->setMat4("projection", m_proj);
 
 		glBindVertexArray(m_VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -113,6 +126,9 @@ namespace RedSunlight {
 	{
 		m_shader->useShader();
 		m_shader->setVec4f("shapeColor", m_color);
+		m_shader->setMat4("model", m_model);
+		m_shader->setMat4("view", m_view);
+		m_shader->setMat4("projection", m_proj);
 
 		glBindVertexArray(m_VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);

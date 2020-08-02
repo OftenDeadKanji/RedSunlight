@@ -109,6 +109,7 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Core\globalInformation.h" />
     <ClInclude Include="src\Shaders\shader.h" />
     <ClInclude Include="src\2D\Primitives\primitives.h" />
     <ClInclude Include="src\Core\config.h" />
@@ -118,6 +119,7 @@
     <ClInclude Include="src\Window\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Core\globalInformation.cpp" />
     <ClCompile Include="src\Shaders\shader.cpp" />
     <ClCompile Include="src\2D\Primitives\primitives.cpp" />
     <ClCompile Include="src\Core\PCH\pch.cpp">
