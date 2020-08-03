@@ -14,6 +14,7 @@ public:
 
 	void useShader();
 
+	void setVec3f(const std::string name, glm::vec3) const;
 	void setVec4f(const std::string& name, glm::vec4) const;
 	void setMat4(const std::string& name, glm::mat4) const;
 private:

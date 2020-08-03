@@ -5,6 +5,8 @@
 #include <stdlib.h>
 #include <fstream>
 #include <unordered_map>
+#include <queue>
+#include <map>
 #include <utility>
 
 #include "../../OtherLibs/headers/glad/glad.h"
@@ -17,3 +19,4 @@
 #include "../config.h"
 #include "../status.h"
 #include "../globalInformation.h"
+#include "../../Drawables/IDrawable.h"

@@ -40,6 +40,10 @@ namespace RedSunlight {
 
 				glEnable(GL_DEPTH_TEST);
 
+				//glEnable(GL_CULL_FACE);
+				glEnable(GL_BLEND);
+				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
 				GlobalInformation::getInstance().setScreenResolution(m_window_width, m_window_height);
 			}
 			else {
@@ -72,8 +76,24 @@ namespace RedSunlight {
 		glViewport(m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height);
 	}
 
-	void Window::drawWindowContent()
+	void Window::displayContent()
 	{
+		glEnable(GL_DEPTH_TEST);
+
+		while (!m_drawables[DrawableType::ELEMENT_3D].empty()) {
+			IDrawable* drawable3D = m_drawables[DrawableType::ELEMENT_3D].front();
+			drawable3D->draw();
+			m_drawables[DrawableType::ELEMENT_3D].pop();
+		}
+
+		glDisable(GL_DEPTH_TEST);
+
+		while (!m_drawables[DrawableType::ELEMENT_2D].empty()) {
+			IDrawable* drawable2D = m_drawables[DrawableType::ELEMENT_2D].front();
+			drawable2D->draw();
+			m_drawables[DrawableType::ELEMENT_2D].pop();
+		}
+
 		glfwSwapBuffers(m_window);
 	}
 
@@ -81,6 +101,11 @@ namespace RedSunlight {
 	{
 		glClearColor(r / 255.f, g / 255.f, b / 255.f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void Window::drawElement(IDrawable* drawable)
+	{
+		m_drawables[drawable->getDrawableType()].push(drawable);
 	}
 }
 

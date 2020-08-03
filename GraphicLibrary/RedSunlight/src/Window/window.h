@@ -16,15 +16,20 @@ namespace RedSunlight {
 		~Window();
 
 		void setViewport(int newX, int newY, int newWidth, int newHeight);
-		void drawWindowContent();
+		
 		void clearToColor(int r, int g, int b);
+		void drawElement(IDrawable*);
+		void displayContent();
 
 	private:
 		int m_window_width, m_window_height;
 		int m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height;
 		std::string m_title;
+
 		WindowMode m_mode;
 		GLFWwindow* m_window;
+
+		std::unordered_map<DrawableType, std::queue<IDrawable*>> m_drawables;
 	};
 }
 

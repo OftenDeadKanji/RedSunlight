@@ -4,6 +4,7 @@
 namespace RedSunlight {
 
 	#pragma region Primitive
+
 	Primitive::Primitive(glm::vec4 color)
 		: m_color(glm::vec4(color.x / 255.f, color.y / 255.f, color.z / 255.f, color.w / 255.f)),
 		m_proj(glm::mat4(1.0f)), m_view(glm::mat4(1.0f)), m_model(glm::mat4(1.0f))
@@ -52,9 +53,16 @@ namespace RedSunlight {
 
 		delete m_shader;
 	}
+
+	DrawableType Primitive::getDrawableType() const
+	{
+		return DrawableType::ELEMENT_2D;
+	}
+
 	#pragma endregion
 
 	#pragma region Triangle2D
+
 	Traingle2D::Traingle2D(glm::vec2 left, glm::vec2 top, glm::vec2 right, const glm::vec4& color) 
 		: Primitive(color)
 	{
@@ -89,6 +97,7 @@ namespace RedSunlight {
 		glBindVertexArray(m_VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
 	}
+
 	#pragma endregion
 
 	#pragma region Rectangle2D
@@ -119,8 +128,7 @@ namespace RedSunlight {
 	}
 
 	Rectangle2D::~Rectangle2D()
-	{
-	}
+	{}
 
 	void Rectangle2D::draw()
 	{

@@ -1,16 +1,19 @@
 #pragma once
-#include "../../Shaders/shader.h"
+#include "../../../Shaders/shader.h"
 
 namespace RedSunlight {
 
 	//base class for primitives
-	class RED_API Primitive {
+	class RED_API Primitive
+		: public IDrawable {
 	public:
 		Primitive(glm::vec4 color);
-		~Primitive();
+		virtual ~Primitive();
 
-		virtual void draw() = 0;
 	protected:
+		virtual void draw() override = 0;
+		virtual DrawableType getDrawableType() const override;
+
 		GLuint m_VBO, m_VAO;
 		Shader* m_shader;
 		glm::vec4 m_color;
@@ -26,6 +29,7 @@ namespace RedSunlight {
 		Traingle2D(glm::vec2 left, glm::vec2 top, glm::vec2 right, const glm::vec4& color);
 		~Traingle2D();
 
+	private:
 		void draw() override;
 	};
 
@@ -35,6 +39,7 @@ namespace RedSunlight {
 		Rectangle2D(glm::vec2 upperLeft, glm::vec2 bottomRight, const glm::vec4& color);
 		~Rectangle2D();
 
+	private:
 		void draw() override;
 	};
 

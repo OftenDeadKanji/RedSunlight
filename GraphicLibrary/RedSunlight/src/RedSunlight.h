@@ -1,7 +1,8 @@
 #pragma once
 #include "Core/PCH/pch.h"
 #include "Window/window.h"
-#include "2D/Primitives/primitives.h"
+#include "Drawables/2D/Primitives/primitives.h"
+#include "Drawables/2D/Text/text.h"
 
 namespace RedSunlight {
 

@@ -1,6 +1,5 @@
 #include "pch.h"
 #include "shader.h"
-#include <iostream>
 
 Shader::Shader(	const char* vertexShader,	ShaderCreationMethod vertexMethod,
 				const char* fragmentShader,	ShaderCreationMethod fragmentMethod,
@@ -102,6 +101,12 @@ GLint Shader::getUniformLocation(const std::string& name) const
 	GLint location = glGetUniformLocation(m_shaderProgram, name.c_str());
 	m_uniformsLocations[name] = location;
 	return location;
+}
+
+void Shader::setVec3f(const std::string name, glm::vec3 v) const
+{
+	GLint location = getUniformLocation(name);
+	glUniform3f(location, v.x, v.y, v.z);
 }
 
 void Shader::setVec4f(const std::string& name, glm::vec4 v) const

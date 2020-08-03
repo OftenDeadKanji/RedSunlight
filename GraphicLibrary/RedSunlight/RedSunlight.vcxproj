@@ -68,7 +68,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -97,7 +97,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>
@@ -110,8 +110,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Core\globalInformation.h" />
+    <ClInclude Include="src\Drawables\2D\Text\text.h" />
+    <ClInclude Include="src\Drawables\IDrawable.h" />
     <ClInclude Include="src\Shaders\shader.h" />
-    <ClInclude Include="src\2D\Primitives\primitives.h" />
+    <ClInclude Include="src\Drawables\2D\Primitives\primitives.h" />
     <ClInclude Include="src\Core\config.h" />
     <ClInclude Include="src\Core\PCH\pch.h" />
     <ClInclude Include="src\Core\status.h" />
@@ -120,8 +122,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Core\globalInformation.cpp" />
+    <ClCompile Include="src\Drawables\2D\Text\text.cpp" />
     <ClCompile Include="src\Shaders\shader.cpp" />
-    <ClCompile Include="src\2D\Primitives\primitives.cpp" />
+    <ClCompile Include="src\Drawables\2D\Primitives\primitives.cpp" />
     <ClCompile Include="src\Core\PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
