@@ -2,6 +2,7 @@
 
 enum class DrawableType {
 	ELEMENT_2D,
+	ELEMENT_2D_TEXT,
 	ELEMENT_3D
 };
 

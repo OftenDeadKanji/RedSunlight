@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "window.h"
+#include "../../Drawables/2D/Text/text.h"
 
 namespace RedSunlight {
 
@@ -36,13 +37,8 @@ namespace RedSunlight {
 
 			if (gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
 				glViewport(m_viewport_x, m_viewport_y, m_viewport_width, m_viewport_height);
+
 				glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
-
-				glEnable(GL_DEPTH_TEST);
-
-				//glEnable(GL_CULL_FACE);
-				glEnable(GL_BLEND);
-				glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
 				GlobalInformation::getInstance().setScreenResolution(m_window_width, m_window_height);
 			}

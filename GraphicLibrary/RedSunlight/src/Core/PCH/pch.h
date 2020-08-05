@@ -15,6 +15,7 @@
 #include "../../OtherLibs/headers/glm/glm.hpp"
 #include "../../OtherLibs/headers/glm/gtc/matrix_transform.hpp"
 #include "../../OtherLibs/headers/glm/gtc/type_ptr.hpp"
+#include "../../OtherLibs/headers/stb_image/stb_image.h"
 
 #include "../config.h"
 #include "../status.h"
