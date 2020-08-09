@@ -4,12 +4,12 @@
 
 
 namespace RedSunlight {
-	Event::Event() : type(EventType::NONE)
+	Event::Event() : type(EventType::eNone)
 	{}
-	Event::Event(EventType type) : type(type)
+	Event::Event(const EventType type) : type(type)
 	{}
 
-	EventManager::EventManager() : m_window(nullptr), m_mouse(nullptr)
+	EventManager::EventManager() : m_window(nullptr), m_mouse(nullptr), m_keyboard(nullptr)
 	{}
 
 	EventManager& EventManager::getInstance()
@@ -25,14 +25,14 @@ namespace RedSunlight {
 		m_keyboard = new Keyboard(window);
 	}
 
-	Mouse* EventManager::startMouse()
+	Mouse* EventManager::startMouse() const
 	{
 		glfwSetMouseButtonCallback(m_window->m_window, mouse_button_callback);
 
 		return m_mouse;
 	}
 
-	Keyboard* EventManager::startKeyboard()
+	Keyboard* EventManager::startKeyboard() const
 	{
 		glfwSetKeyCallback(m_window->m_window, key_callback);
 
@@ -48,11 +48,11 @@ namespace RedSunlight {
 		processKeyboardEvents();
 		processMouseEvents();
 
-		if (eventQueue.empty())
+		if (m_eventQueue.empty())
 			return false;
 
-		event = eventQueue.front();
-		eventQueue.pop();
+		event = m_eventQueue.front();
+		m_eventQueue.pop();
 
 		return true;
 	}
@@ -60,7 +60,7 @@ namespace RedSunlight {
 	void EventManager::processWindowEvents()
 	{
 		if (glfwWindowShouldClose(m_window->m_window))
-			eventQueue.push(Event(EventType::WINDOW_CLOSE));
+			m_eventQueue.push(Event(EventType::eWindowClose));
 	}
 
 	void EventManager::processKeyboardEvents()
@@ -72,10 +72,10 @@ namespace RedSunlight {
 
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 	{
-		Mouse* mouse = EventManager::getInstance().startMouse();
+		auto* mouse = EventManager::getInstance().startMouse();
 
 		if (action == GLFW_PRESS) {
-			EventManager::getInstance().eventQueue.push(Event(EventType::MOUSE_BUTTON_PRESSED));
+			EventManager::getInstance().m_eventQueue.push(Event(EventType::eMouseButtonPressed));
 
 			if (button == GLFW_MOUSE_BUTTON_LEFT)
 				mouse->m_buttons[0] = true;
@@ -85,7 +85,7 @@ namespace RedSunlight {
 				mouse->m_buttons[2] = true;
 		}
 		else if (action == GLFW_RELEASE) {
-			EventManager::getInstance().eventQueue.push(Event(EventType::MOUSE_BUTTON_RELEASED));
+			EventManager::getInstance().m_eventQueue.push(Event(EventType::eMouseButtonReleased));
 
 			if (button == GLFW_MOUSE_BUTTON_LEFT)
 				mouse->m_buttons[0] = false;
@@ -98,27 +98,27 @@ namespace RedSunlight {
 
 	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		Keyboard* keyboard = EventManager::getInstance().startKeyboard();
+		auto* keyboard = EventManager::getInstance().startKeyboard();
 
 		if (action == GLFW_PRESS) {
-			EventManager::getInstance().eventQueue.push(Event(EventType::KEY_PRESSED));
+			EventManager::getInstance().m_eventQueue.push(Event(EventType::eKeyPressed));
 			if (key >= GLFW_KEY_A && key <= GLFW_KEY_Z) {
-				KeyCode pressedKey = (KeyCode)(key - GLFW_KEY_A);
+				auto pressedKey = static_cast<KeyCode>(key - GLFW_KEY_A);
 				keyboard->m_lastPressedKey = pressedKey;
-				keyboard->m_keysState[(int)pressedKey] = true;
+				keyboard->m_keysState[static_cast<int>(pressedKey)] = true;
 			}
 			else if (key >= GLFW_KEY_RIGHT && key <= GLFW_KEY_UP) {
-				KeyCode pressedKey = (KeyCode)(key - GLFW_KEY_RIGHT + (int)KeyCode::KEY_ARROW_RIGHT);
+				auto pressedKey = static_cast<KeyCode>(key - GLFW_KEY_RIGHT + static_cast<int>(KeyCode::eKeyArrowRight));
 				keyboard->m_lastPressedKey = pressedKey;
-				keyboard->m_keysState[(int)pressedKey] = true;
+				keyboard->m_keysState[static_cast<int>(pressedKey)] = true;
 			}
 		}
 		else if (action == GLFW_RELEASE) {
-			EventManager::getInstance().eventQueue.push(Event(EventType::KEY_RELEASED));
+			EventManager::getInstance().m_eventQueue.push(Event(EventType::eKeyReleased));
 			if (key >= GLFW_KEY_A && key <= GLFW_KEY_Z)
 				keyboard->m_keysState[key - GLFW_KEY_A] = false;
 			else if (key >= GLFW_KEY_RIGHT && key <= GLFW_KEY_UP)
-				keyboard->m_keysState[key - GLFW_KEY_RIGHT + (int)KeyCode::KEY_ARROW_RIGHT] = false;
+				keyboard->m_keysState[key - GLFW_KEY_RIGHT + static_cast<int>(KeyCode::eKeyArrowRight)] = false;
 
 		}
 
@@ -158,15 +158,15 @@ namespace RedSunlight {
 		return m_keysState;
 	}
 
-	KeyCode Keyboard::getLastPressedKey()
+	KeyCode Keyboard::getLastPressedKey() const
 	{
 		return m_lastPressedKey;
 	}
 
 	Keyboard::Keyboard(Window* window) : m_window(window)
 	{
-		for (int i = 0; i < keysCount; i++)
-			m_keysState[i] = false;
+		for (auto& i : m_keysState)
+			i = false;
 	}
 
 #pragma endregion

@@ -8,7 +8,7 @@ namespace RedSunlight {
 
 #pragma region Font
 
-	Font::Font(const char* fontFilePath, int size)
+	Font::Font(const char* fontFilePath, const int size)
 	{
 		createShader();
 
@@ -18,9 +18,24 @@ namespace RedSunlight {
 		glGenBuffers(1, &m_VBO);
 		glBindVertexArray(m_VAO);
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, NULL, GL_DYNAMIC_DRAW);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
 		glEnableVertexAttribArray(0);
-		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), 0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+
+	Font::Font(const Font& font) : m_characters(font.m_characters)
+	{
+		createShader();
+
+		glGenVertexArrays(1, &m_VAO);
+		glGenBuffers(1, &m_VBO);
+		glBindVertexArray(m_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
@@ -30,7 +45,7 @@ namespace RedSunlight {
 		delete m_shader;
 	}
 
-	void Font::renderText(const std::pair<int, int>& pos, const std::string& text, glm::vec3 color, float scale)
+	void Font::renderText(const std::pair<int, int>& pos, const std::string& text, const glm::vec3& color, const float scale)
 	{
 		// activate corresponding render state	
 		m_shader->useShader();
@@ -42,17 +57,15 @@ namespace RedSunlight {
 		float x = pos.first;
 		float y = pos.second;
 
-		// iterate through all characters
-		std::string::const_iterator c;
-		for (c = text.begin(); c != text.end(); c++)
+		for (auto c : text)
 		{
-			Character ch = m_characters[*c];
+			const Character ch = m_characters[c];
 
-			float xpos = x + ch.bearing.x * scale;
-			float ypos = y - (ch.size.y - ch.bearing.y) * scale;
+			const float xpos = x + ch.bearing.x * scale;
+			const float ypos = y - (ch.size.y - ch.bearing.y) * scale;
 
-			float w = ch.size.x * scale;
-			float h = ch.size.y * scale;
+			const float w = ch.size.x * scale;
+			const float h = ch.size.y * scale;
 			// update VBO for each character
 			float vertices[6][4] = {
 				{ xpos,     ypos + h,   0.0f, 0.0f },
@@ -73,7 +86,7 @@ namespace RedSunlight {
 			// render quad
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-			x += (ch.advance >> 6)* scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+			x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
 		}
 		glBindVertexArray(0);
 		glBindTexture(GL_TEXTURE_2D, 0);
@@ -81,7 +94,7 @@ namespace RedSunlight {
 
 	void Font::createShader()
 	{
-		const char* vertexSource = R"(
+		const char* const vertexSource = R"(
             #version 330 core
             layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
             out vec2 TexCoords;
@@ -95,7 +108,7 @@ namespace RedSunlight {
             }
         )";
 
-		const char* fragmentSource = R"(
+		const char* const fragmentSource = R"(
             #version 330 core
             in vec2 TexCoords;
             out vec4 color;
@@ -110,9 +123,9 @@ namespace RedSunlight {
             } 
         )";
 
-		m_shader = new Shader(vertexSource, ShaderCreationMethod::SHADER_SOURCE_CODE, fragmentSource, ShaderCreationMethod::SHADER_SOURCE_CODE);
+		m_shader = new Shader(vertexSource, ShaderCreationMethod::eShaderSourceCode, fragmentSource, ShaderCreationMethod::eShaderSourceCode);
 
-		auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
+		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
 		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), 0.0f, static_cast<float>(screenResolution.second));
 		//m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);
 
@@ -148,53 +161,52 @@ namespace RedSunlight {
 			//TODO RED_TODO komunikat error
 			return;
 		}
-		else {
-			// set size to load glyphs as
-			FT_Set_Pixel_Sizes(face, 0, size);
+		
+		// set size to load glyphs as
+		FT_Set_Pixel_Sizes(face, 0, size);
 
-			// disable byte-alignment restriction
-			glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+		// disable byte-alignment restriction
+		glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
 
-			// load first 128 characters of ASCII set
-			for (unsigned char c = 0; c < 128; c++)
+		// load first 128 characters of ASCII set
+		for (unsigned char c = 0; c < 128; c++)
+		{
+			// Load character glyph 
+			if (FT_Load_Char(face, c, FT_LOAD_RENDER))
 			{
-				// Load character glyph 
-				if (FT_Load_Char(face, c, FT_LOAD_RENDER))
-				{
-					//TODO RED_TODO komunikat
-					continue;
-				}
-				// generate texture
-				unsigned int texture;
-				glGenTextures(1, &texture);
-				glBindTexture(GL_TEXTURE_2D, texture);
-				glTexImage2D(
-					GL_TEXTURE_2D,
-					0,
-					GL_RED,
-					face->glyph->bitmap.width,
-					face->glyph->bitmap.rows,
-					0,
-					GL_RED,
-					GL_UNSIGNED_BYTE,
-					face->glyph->bitmap.buffer
-				);
-				// set texture options
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-				glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-				// now store character for later use
-				Character character = {
-					texture,
-					glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
-					glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
-					face->glyph->advance.x
-				};
-				m_characters.insert(std::pair<char, Character>(c, character));
+				//TODO RED_TODO komunikat
+				continue;
 			}
-			glBindTexture(GL_TEXTURE_2D, 0);
+			// generate texture
+			unsigned int texture;
+			glGenTextures(1, &texture);
+			glBindTexture(GL_TEXTURE_2D, texture);
+			glTexImage2D(
+				GL_TEXTURE_2D,
+				0,
+				GL_RED,
+				face->glyph->bitmap.width,
+				face->glyph->bitmap.rows,
+				0,
+				GL_RED,
+				GL_UNSIGNED_BYTE,
+				face->glyph->bitmap.buffer
+			);
+			// set texture options
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+			// now store character for later use
+			Character character = {
+				texture,
+				glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
+				glm::ivec2(face->glyph->bitmap_left, face->glyph->bitmap_top),
+				face->glyph->advance.x
+			};
+			m_characters.insert(std::pair<char, Character>(c, character));
 		}
+		glBindTexture(GL_TEXTURE_2D, 0);
 		// destroy FreeType once we're finished
 		FT_Done_Face(face);
 		FT_Done_FreeType(ft);
@@ -204,14 +216,9 @@ namespace RedSunlight {
 
 #pragma region Text
 
-	Text::Text(int x, int y, Font* font, const std::string& text, glm::vec3 color) : m_x(x), m_y(y), m_font(font), m_text(text), m_color(glm::vec3(color.x / 255.0f, color.y / 255.0f, color.z / 255.0f))
+	Text::Text(const int x, const int y, const Font& font, const std::string& text, const glm::vec3& color)
+	: m_x(x), m_y(y), m_font(font), m_text(text), m_color(glm::vec3(color.x / 255.0f, color.y / 255.0f, color.z / 255.0f))
 	{}
-
-	Text::~Text()
-	{
-		if (m_font != nullptr)
-			delete m_font;
-	}
 
 	std::string& Text::getText()
 	{
@@ -229,12 +236,12 @@ namespace RedSunlight {
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		m_font->renderText(std::pair<int, int>(m_x, m_y), m_text, m_color);
+		m_font.renderText(std::pair<int, int>(m_x, m_y), m_text, m_color);
 	}
 
 	DrawableType Text::getDrawableType() const
 	{
-		return DrawableType::ELEMENT_2D;
+		return DrawableType::eElement2D;
 	}
 
 #pragma endregion

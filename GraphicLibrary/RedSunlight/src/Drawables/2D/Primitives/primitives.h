@@ -7,12 +7,12 @@ namespace RedSunlight {
 	class RED_API Primitive
 		: public IDrawable {
 	public:
-		Primitive(glm::vec4 color);
+		explicit Primitive(const glm::vec4& color);
 		virtual ~Primitive();
 
 	protected:
-		virtual void draw() override = 0;
-		virtual DrawableType getDrawableType() const override;
+		void draw() override = 0;
+		[[nodiscard]] DrawableType getDrawableType() const override;
 
 		GLuint m_VBO, m_VAO;
 		Shader* m_shader;
@@ -26,8 +26,8 @@ namespace RedSunlight {
 	class RED_API Traingle2D
 		: public Primitive {
 	public:
-		Traingle2D(glm::vec2 left, glm::vec2 top, glm::vec2 right, const glm::vec4& color);
-		~Traingle2D();
+		Traingle2D(const glm::vec2& left,const glm::vec2& top, const glm::vec2& right, const glm::vec4& color);
+		~Traingle2D() = default;
 
 	private:
 		void draw() override;
@@ -36,8 +36,8 @@ namespace RedSunlight {
 	class RED_API Rectangle2D
 		: public Primitive {
 	public:
-		Rectangle2D(glm::vec2 upperLeft, glm::vec2 bottomRight, const glm::vec4& color);
-		~Rectangle2D();
+		Rectangle2D(const glm::vec2& upperLeft,const glm::vec2& bottomRight, const glm::vec4& color);
+		~Rectangle2D() = default;
 
 	private:
 		void draw() override;

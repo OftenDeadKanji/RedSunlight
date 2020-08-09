@@ -2,6 +2,8 @@
 
 class GlobalInformation {
 public:
+	GlobalInformation(const GlobalInformation&) = delete;
+	
 	static GlobalInformation& getInstance();
 	
 	void setScreenResolution(int width, int height);
@@ -9,7 +11,6 @@ public:
 
 private:
 	GlobalInformation();
-	GlobalInformation(const GlobalInformation&);
 
-	std::pair<int, int> screenResolution;
+	std::pair<int, int> m_screenResolution;
 };

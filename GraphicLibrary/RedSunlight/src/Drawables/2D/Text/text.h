@@ -7,9 +7,10 @@ namespace RedSunlight {
 	class RED_API Font {
 	public:
 		Font(const char* fontFilePath, int size);
+		Font(const Font&);
 		~Font();
 
-		void renderText(const std::pair<int, int>& pos, const std::string& text, glm::vec3 color, float scale = 1.0f);
+		void renderText(const std::pair<int, int>& pos, const std::string& text, const glm::vec3& color, float scale = 1.0f);
 	private:
 		Shader* m_shader;
 		void createShader();
@@ -30,17 +31,17 @@ namespace RedSunlight {
 	class RED_API Text 
 		: public IDrawable{
 	public:
-		Text(int x, int y, Font* font, const std::string& text, glm::vec3 color = glm::vec3(255.0f, 255.0f, 255.0f));
-		~Text();
+		Text(int x, int y, const Font& font, const std::string& text, const glm::vec3& color = glm::vec3(255.0f, 255.0f, 255.0f));
+		~Text() = default;
 
 		void draw() override;
-		DrawableType getDrawableType() const override;
+		[[nodiscard]] DrawableType getDrawableType() const override;
 
 		std::string& getText();
 		glm::vec3& getColor();
 	private:
 		int m_x, m_y;
-		Font* m_font;
+		Font m_font;
 		std::string m_text;
 		glm::vec3 m_color;
 	};

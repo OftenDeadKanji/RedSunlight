@@ -14,34 +14,35 @@ namespace RedSunlight {
 #pragma region Event things
 
 	enum class RED_API EventType {
-		NONE,
-		MOUSE_BUTTON_PRESSED,
-		MOUSE_BUTTON_RELEASED,
-		KEY_PRESSED,
-		KEY_RELEASED,
-		WINDOW_CLOSE
+		eNone,
+		eMouseButtonPressed,
+		eMouseButtonReleased,
+		eKeyPressed,
+		eKeyReleased,
+		eWindowClose
 	};
 
 	struct RED_API Event {
 		Event();
-		Event(EventType type);
+		explicit Event(EventType type);
 
 		EventType type;
 	};
 
 	class RED_API EventManager {
 	public:
-		static EventManager& getInstance();
+		EventManager(const EventManager&) = delete;
+		EventManager(EventManager&&) = delete;
 		
+		static EventManager& getInstance();
 		void startEventManager(Window* window);
-		Mouse* startMouse();
-		Keyboard* startKeyboard();
+		Mouse* startMouse() const;
+		Keyboard* startKeyboard() const;
 
 		bool checkForEvents(Event& event);
 	private:
 		EventManager();
-		EventManager(EventManager&) = delete;
-
+		
 		void processWindowEvents();
 		void processKeyboardEvents();
 		void processMouseEvents();
@@ -49,7 +50,7 @@ namespace RedSunlight {
 		friend void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 		friend void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
 
-		std::queue<Event> eventQueue;
+		std::queue<Event> m_eventQueue;
 		Window* m_window;
 		Mouse* m_mouse;
 		Keyboard* m_keyboard;
@@ -58,20 +59,21 @@ namespace RedSunlight {
 #pragma endregion
 
 #pragma region Mouse
-	enum class RED_API MOUSE_BUTTONS {
-		LEFT,
-		MIDDLE,
-		RIGHT
+	enum class RED_API MouseButtons {
+		eLeft,
+		eMiddle,
+		eRight
 	};
 
 	class RED_API Mouse {
 	public:
 		Mouse(const Mouse&) = delete;
+		Mouse(Mouse&&) = delete;
 
-		std::pair<int, int> getMousePosition();
+		static std::pair<int, int> getMousePosition();
 		bool* getButtonsState();
 	private:
-		Mouse(Window* window);
+		explicit Mouse(Window* window);
 
 
 		friend static void cursor_position_callback(GLFWwindow* window, double xpos, double ypos);
@@ -87,44 +89,44 @@ namespace RedSunlight {
 #pragma region Keyboard
 
 	enum class RED_API KeyCode {
-		KEY_A,
-		KEY_B,
-		KEY_C,
-		KEY_D,
-		KEY_E,
-		KEY_F,
-		KEY_G,
-		KEY_H,
-		KEY_I,
-		KEY_J,
-		KEY_K,
-		KEY_L,
-		KEY_M,
-		KEY_N,
-		KEY_O,
-		KEY_P,
-		KEY_Q,
-		KEY_R,
-		KEY_S,
-		KEY_T,
-		KEY_U,
-		KEY_V,
-		KEY_W,
-		KEY_X,
-		KEY_Y,
-		KEY_Z,
-		KEY_ARROW_RIGHT,
-		KEY_ARROW_LEFT,
-		KEY_ARROW_DOWN,
-		KEY_ARROW_UP
+		eKeyA,
+		eKeyB,
+		eKeyC,
+		eKeyD,
+		eKeyE,
+		eKeyF,
+		eKeyG,
+		eKeyH,
+		eKeyI,
+		eKeyJ,
+		eKeyK,
+		eKeyL,
+		eKeyM,
+		eKeyN,
+		eKeyO,
+		eKeyP,
+		eKeyQ,
+		eKeyR,
+		eKeyS,
+		eKeyT,
+		eKeyU,
+		eKeyV,
+		eKeyW,
+		eKeyX,
+		eKeyY,
+		eKeyZ,
+		eKeyArrowRight,
+		eKeyArrowLeft,
+		eKeyArrowDown,
+		eKeyArrowUp
 	};
 
 	class RED_API Keyboard {
 	public:
 		bool* getKeysState();
-		KeyCode getLastPressedKey();
+		KeyCode getLastPressedKey() const;
 	private:
-		Keyboard(Window* window);
+		explicit Keyboard(Window* window);
 
 		friend void EventManager::startEventManager(Window*);
 		friend void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);

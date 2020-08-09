@@ -1,14 +1,14 @@
 #pragma once
 
 enum class DrawableType {
-	ELEMENT_2D,
-	ELEMENT_2D_TEXT,
-	ELEMENT_3D
+	eElement2D,
+	eElement2DText,
+	eElement3D
 };
 
 class IDrawable {
 public:
-	virtual DrawableType getDrawableType() const = 0;
+	virtual ~IDrawable() = default;
+	[[nodiscard]] virtual DrawableType getDrawableType() const = 0;
 	virtual void draw() = 0;
-protected:
 };

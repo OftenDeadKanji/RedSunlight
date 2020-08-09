@@ -3,17 +3,18 @@
 
 namespace RedSunlight {
 
-	Sprite::Sprite(int posX, int posY, int width, int height, const char* imageFilePath, std::tuple<int, int, int, int> imageCoords) : m_x(posX), m_y(posY), m_proj(glm::mat4(1.0f))
+	Sprite::Sprite(const int posX, const int posY, const int width, const int height, const char* imageFilePath, const std::tuple<int, int, int, int>& imageCoords)
+	: m_x(posX), m_y(posY), m_proj(glm::mat4(1.0f))
 	{
 		createTexture(imageFilePath);
 
 		createShader();
 
 		auto textCoords = std::make_tuple(
-			(float)std::get<0>(imageCoords) / (float)m_imageWidth,
-			(float)(m_imageHeight - std::get<1>(imageCoords)) / (float)m_imageHeight,
-			(float)std::get<2>(imageCoords) / (float)m_imageWidth,
-			(float)(m_imageHeight - std::get<3>(imageCoords)) / (float)m_imageHeight);
+			static_cast<float>(std::get<0>(imageCoords)) / static_cast<float>(m_imageWidth),
+			static_cast<float>(m_imageHeight - std::get<1>(imageCoords)) / static_cast<float>(m_imageHeight),
+			static_cast<float>(std::get<2>(imageCoords)) / static_cast<float>(m_imageWidth),
+			static_cast<float>(m_imageHeight - std::get<3>(imageCoords)) / static_cast<float>(m_imageHeight));
 
 		float vertices[] = {
 			//X				Y				Z					//U							V
@@ -41,15 +42,17 @@ namespace RedSunlight {
 		glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 		// position attribute
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), static_cast<void*>(nullptr));
 		glEnableVertexAttribArray(0);
 		// texture coord attribute
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), reinterpret_cast<void*>(3 * sizeof(float)));
 		glEnableVertexAttribArray(1);
 	}
 
-	RedSunlight::Sprite::~Sprite()
+	Sprite::~Sprite()
 	{
+		delete m_shader;
+		glDeleteTextures(1, &m_texture);
 	}
 
 	void Sprite::createTexture(const char* imageFilePath)
@@ -66,7 +69,7 @@ namespace RedSunlight {
 		// load and generate the texture
 		int width, height, nrChannels;
 		stbi_set_flip_vertically_on_load(true);
-		unsigned char* data = stbi_load(imageFilePath, &width, &height, &nrChannels, 0);
+		auto* data = stbi_load(imageFilePath, &width, &height, &nrChannels, 0);
 		m_imageWidth = width;
 		m_imageHeight = height;
 		if (data)
@@ -83,7 +86,7 @@ namespace RedSunlight {
 
 	void Sprite::createShader()
 	{
-		const char* vertexSourceCode = R"(
+		const auto* const vertexSourceCode = R"(
 		#version 400 core
 		layout (location = 0) in vec3 aPos;
 		layout (location = 1) in vec2 aTexCoord;
@@ -99,7 +102,7 @@ namespace RedSunlight {
 		}
 		)";
 
-		const char* fragmentSourceCode = R"(
+		const auto* const fragmentSourceCode = R"(
 		#version 400 core
 		out vec4 FragColor;
 		
@@ -113,15 +116,15 @@ namespace RedSunlight {
 		}
 		)";
 
-		m_shader = new Shader(vertexSourceCode, ShaderCreationMethod::SHADER_SOURCE_CODE, fragmentSourceCode, ShaderCreationMethod::SHADER_SOURCE_CODE);
+		m_shader = new Shader(vertexSourceCode, ShaderCreationMethod::eShaderSourceCode, fragmentSourceCode, ShaderCreationMethod::eShaderSourceCode);
 
-		auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
+		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
 		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);
 	}
 
 	DrawableType Sprite::getDrawableType() const
 	{
-		return DrawableType::ELEMENT_2D;
+		return DrawableType::eElement2D;
 	}
 
 	void Sprite::draw()

@@ -5,14 +5,14 @@ namespace RedSunlight {
 
 	#pragma region Primitive
 
-	Primitive::Primitive(glm::vec4 color)
+	Primitive::Primitive(const glm::vec4& color)
 		: m_color(glm::vec4(color.x / 255.f, color.y / 255.f, color.z / 255.f, color.w / 255.f)),
 		m_proj(glm::mat4(1.0f)), m_view(glm::mat4(1.0f)), m_model(glm::mat4(1.0f))
 	{
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
 
-		const char* vertexShader = R"(
+		const auto* const vertexShader = R"(
 			#version 400 core  
 			layout (location = 0) in vec3 position;
 			
@@ -26,7 +26,7 @@ namespace RedSunlight {
 			}
 		)";
 
-		const char* fragmentShader = R"(
+		const auto* const fragmentShader = R"(
 			#version 400 core 
 
 			uniform vec4 shapeColor;
@@ -38,9 +38,9 @@ namespace RedSunlight {
 			}
 		)";
 
-		m_shader = new Shader(vertexShader, ShaderCreationMethod::SHADER_SOURCE_CODE, fragmentShader, ShaderCreationMethod::SHADER_SOURCE_CODE);
+		m_shader = new Shader(vertexShader, ShaderCreationMethod::eShaderSourceCode, fragmentShader, ShaderCreationMethod::eShaderSourceCode);
 
-		auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
+		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
 
 		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);
 		m_view = glm::translate(m_view, glm::vec3(0.0f, 0.0f, -1.0f));
@@ -56,14 +56,14 @@ namespace RedSunlight {
 
 	DrawableType Primitive::getDrawableType() const
 	{
-		return DrawableType::ELEMENT_2D;
+		return DrawableType::eElement2D;
 	}
 
 	#pragma endregion
 
 	#pragma region Triangle2D
 
-	Traingle2D::Traingle2D(glm::vec2 left, glm::vec2 top, glm::vec2 right, const glm::vec4& color) 
+	Traingle2D::Traingle2D(const glm::vec2& left, const glm::vec2& top, const glm::vec2& right, const glm::vec4& color)
 		: Primitive(color)
 	{
 		float vertices[] = {
@@ -77,15 +77,13 @@ namespace RedSunlight {
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(nullptr));
 		glEnableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
-	Traingle2D::~Traingle2D()
-	{}
-
+	
 	void Traingle2D::draw()
 	{
 		m_shader->useShader();
@@ -102,7 +100,7 @@ namespace RedSunlight {
 
 	#pragma region Rectangle2D
 
-	Rectangle2D::Rectangle2D(glm::vec2 upperLeft, glm::vec2 bottomRight, const glm::vec4& color)
+	Rectangle2D::Rectangle2D(const glm::vec2& upperLeft, const glm::vec2& bottomRight, const glm::vec4& color)
 		: Primitive(color)
 	{
 		float vertices[] = {
@@ -120,15 +118,12 @@ namespace RedSunlight {
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), (GLvoid*)0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(nullptr));
 		glEnableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
-
-	Rectangle2D::~Rectangle2D()
-	{}
 
 	void Rectangle2D::draw()
 	{

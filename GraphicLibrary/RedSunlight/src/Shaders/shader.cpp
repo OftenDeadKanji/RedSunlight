@@ -1,9 +1,9 @@
 #include "pch.h"
 #include "shader.h"
 
-Shader::Shader(	const char* vertexShader,	ShaderCreationMethod vertexMethod,
-				const char* fragmentShader,	ShaderCreationMethod fragmentMethod,
-				const char* geometryShader,	ShaderCreationMethod geometryMethod)
+Shader::Shader(	const char* vertexShader, const ShaderCreationMethod vertexMethod,
+				const char* fragmentShader, const ShaderCreationMethod fragmentMethod,
+				const char* geometryShader, const ShaderCreationMethod geometryMethod)
 {
 	unsigned int shaders[3];
 	shaders[0] = createShader(vertexShader, GL_VERTEX_SHADER, vertexMethod);
@@ -29,7 +29,7 @@ Shader::Shader(	const char* vertexShader,	ShaderCreationMethod vertexMethod,
 	glGetProgramiv(m_shaderProgram, GL_LINK_STATUS, &success);
 
 	if (!success) {
-		glGetProgramInfoLog(m_shaderProgram, 512, NULL, infoLog);
+		glGetProgramInfoLog(m_shaderProgram, 512, nullptr, infoLog);
 		//TODO RED_TODO - wyj¹tek z wiadomoœci¹ infoLog
 	}
 
@@ -39,7 +39,12 @@ Shader::Shader(	const char* vertexShader,	ShaderCreationMethod vertexMethod,
 		glDeleteShader(shaders[2]);
 }
 
-unsigned int Shader::createShader(const char* shaderData, GLenum shaderType, ShaderCreationMethod method)
+Shader::~Shader()
+{
+	glDeleteShader(m_shaderProgram);
+}
+
+unsigned int Shader::createShader(const char* shaderData, const GLenum shaderType, const ShaderCreationMethod method)
 {
 	if (shaderType != GL_VERTEX_SHADER && shaderType != GL_FRAGMENT_SHADER && shaderType != GL_GEOMETRY_SHADER)
 		return -1;
@@ -47,7 +52,7 @@ unsigned int Shader::createShader(const char* shaderData, GLenum shaderType, Sha
 	//shader source code
 	const char* code;
 
-	if (method == ShaderCreationMethod::SHADER_FILE_PATH) {
+	if (method == ShaderCreationMethod::eShaderFilePath) {
 		std::ifstream shaderFile(shaderData, std::ios::in);
 		std::string shaderCode;
 		
@@ -66,12 +71,12 @@ unsigned int Shader::createShader(const char* shaderData, GLenum shaderType, Sha
 		//getting const char*
 		code = shaderCode.c_str();
 	} 
-	else if (method == ShaderCreationMethod::SHADER_SOURCE_CODE) {
+	else if (method == ShaderCreationMethod::eShaderSourceCode) {
 		code = shaderData;
 	}
 	//shader compilation
-	unsigned int shader = glCreateShader(shaderType);
-	glShaderSource(shader, 1, &code, NULL);
+	const auto shader = glCreateShader(shaderType);
+	glShaderSource(shader, 1, &code, nullptr);
 	glCompileShader(shader);
 
 	//checking for errors
@@ -88,7 +93,7 @@ unsigned int Shader::createShader(const char* shaderData, GLenum shaderType, Sha
 	return shader;
 }
 
-void Shader::useShader()
+void Shader::useShader() const
 {
 	glUseProgram(m_shaderProgram);
 }
