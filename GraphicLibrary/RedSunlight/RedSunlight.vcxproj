@@ -18,13 +18,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v142</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -78,6 +78,10 @@
       <Message>
       </Message>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)src\OtherLibs\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -107,13 +111,20 @@
       <Message>
       </Message>
     </PostBuildEvent>
+    <Lib>
+      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetype.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(ProjectDir)src\OtherLibs\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Event System\keyboard.h" />
     <ClInclude Include="src\Core\globalInformation.h" />
     <ClInclude Include="src\Drawables\2D\Sprite\sprite.h" />
     <ClInclude Include="src\Drawables\2D\Text\text.h" />
     <ClInclude Include="src\Drawables\IDrawable.h" />
+    <ClInclude Include="src\Event System\event.h" />
     <ClInclude Include="src\Event System\eventManager.h" />
+    <ClInclude Include="src\Event System\mouse.h" />
     <ClInclude Include="src\OtherLibs\headers\stb_image\stb_image.h" />
     <ClInclude Include="src\Shaders\shader.h" />
     <ClInclude Include="src\Drawables\2D\Primitives\primitives.h" />
@@ -124,10 +135,13 @@
     <ClInclude Include="src\Window\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Event System\keyboard.cpp" />
     <ClCompile Include="src\Core\globalInformation.cpp" />
     <ClCompile Include="src\Drawables\2D\Sprite\sprite.cpp" />
     <ClCompile Include="src\Drawables\2D\Text\text.cpp" />
+    <ClCompile Include="src\Event System\event.cpp" />
     <ClCompile Include="src\Event System\eventManager.cpp" />
+    <ClCompile Include="src\Event System\mouse.cpp" />
     <ClCompile Include="src\OtherLibs\sources\stb_image.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>

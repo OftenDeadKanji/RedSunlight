@@ -12,10 +12,24 @@ namespace RedSunlight {
 		eBorderless
 	};
 
+	struct RED_API WindowProperties {
+		WindowProperties(int width, int height, const char* title, WindowMode mode);
+		WindowProperties(const WindowProperties&) = default;
+		WindowProperties(WindowProperties&&) = default;
+		~WindowProperties() = default;
+
+		WindowProperties& operator=(const WindowProperties&) = default;
+		WindowProperties& operator=(WindowProperties&&) = default;
+		
+		int width, height;
+		std::string title;
+		WindowMode mode;
+	};
+	
 	class RED_API Window
 	{
 	public:
-		Window(int width, int height, const char* title, WindowMode mode);
+		explicit Window(const WindowProperties& properties);
 		Window(Window&) = delete;
 		Window(Window&&) noexcept;
 		~Window();
@@ -23,21 +37,21 @@ namespace RedSunlight {
 		Window& operator=(Window&) = delete;
 		Window& operator=(Window&&) noexcept;
 		
-		void setViewport(int newX, int newY, int newWidth, int newHeight);
+		//void setViewport(int newX, int newY, int newWidth, int newHeight);
+		void resize(int newWidth, int newHeight);
 
-		static void clearToColor(int r, int g, int b);
+		static void clearToColor(int red, int green, int blue);
 		void drawElement(IDrawable*);
 		void displayContent();
 
 	private:
 		friend class EventManager;
 		friend class Mouse;
+		friend class Keyboard;
 
-		int m_windowWidth, m_windowHeight;
-		int m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight;
-		std::string m_title;
+		void createWindow();
 
-		WindowMode m_mode;
+		WindowProperties m_properties;
 		GLFWwindow* m_window;
 		std::unordered_map<DrawableType, std::queue<IDrawable*>> m_drawables;
 	};

@@ -38,7 +38,7 @@ namespace RedSunlight {
 			}
 		)";
 
-		m_shader = new Shader(vertexShader, ShaderCreationMethod::eShaderSourceCode, fragmentShader, ShaderCreationMethod::eShaderSourceCode);
+		m_shader = new Shader(ShaderCreationMethod::eShaderSourceCode, vertexShader, fragmentShader);
 
 		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
 

@@ -116,7 +116,7 @@ namespace RedSunlight {
 		}
 		)";
 
-		m_shader = new Shader(vertexSourceCode, ShaderCreationMethod::eShaderSourceCode, fragmentSourceCode, ShaderCreationMethod::eShaderSourceCode);
+		m_shader = new Shader(ShaderCreationMethod::eShaderSourceCode, vertexSourceCode, fragmentSourceCode);
 
 		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
 		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);

@@ -1,3 +1,4 @@
+#include <iostream>
 #include <RedSunlight.h>
 
 int main()
@@ -6,7 +7,7 @@ int main()
 		return -1;
 
 	//utworzenie okna
-	RedSunlight::Window okno(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed);
+	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
 
 	//testowanie prymitywa - trójk¹t
 	RedSunlight::Traingle2D trojkat(glm::vec2(0, 0), glm::vec2(200, 400), glm::vec2(300,200), glm::vec4(128, 0, 255, 255));
@@ -21,14 +22,19 @@ int main()
 	auto* mysz = RedSunlight::EventManager::getInstance().startMouse();
 	auto* klawiatura = RedSunlight::EventManager::getInstance().startKeyboard();
 
-	RedSunlight::Event event;
-
 	auto r = 0, g = 162, b = 232;
 	auto warunek = true;
 	while (warunek)
 	{
-		while (RedSunlight::EventManager::getInstance().checkForEvents(event)) {
-			if (event.type == RedSunlight::EventType::eKeyPressed) {
+		auto queue = RedSunlight::EventManager::getInstance().checkForEvents();
+		std::cout << queue.size() << std::endl;
+		while (!queue.empty()) {
+			auto event = queue.front();
+			queue.pop_front();
+			if (event.type == RedSunlight::EventType::eWindowClose) {
+				warunek = false;
+			}
+			else if (event.type == RedSunlight::EventType::eKeyPressed) {
 				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyA) {
 					warunek = false;
 				}
