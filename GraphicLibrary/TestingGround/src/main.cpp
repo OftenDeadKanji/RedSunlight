@@ -10,9 +10,17 @@ int main()
 	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
 
 	//testowanie prymitywa - trójk¹t
-	RedSunlight::Traingle2D trojkat(glm::vec2(0, 0), glm::vec2(200, 400), glm::vec2(300,200), glm::vec4(128, 0, 255, 255));
-	RedSunlight::Rectangle2D prostokat(glm::vec2(200, 500), glm::vec2(400, 1000), glm::vec4(255, 127, 39, 255));
+	glm::vec2 wierzcholki[] = {
+		glm::vec2(0, 0),
+		glm::vec2(200, 400),
+		glm::vec2(300,200)
+	};
 	
+	RedSunlight::Triangle2D trojkat(wierzcholki, glm::vec4(128, 0, 255, 255));
+	RedSunlight::Rectangle2D prostokat1(glm::vec2(500, 350), glm::vec2(700, 550), glm::vec4(255, 127, 39, 255));
+	RedSunlight::Rectangle2D prostokat2(glm::vec2(700, 550), glm::vec2(900, 750), glm::vec4(255, 127, 39, 255));
+	RedSunlight::Cube kostka(200, 200, 0, 200, 0, 255, 140, 255);
+
 	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
 	RedSunlight::Text tekst(100, 800, czcionka, "Testowe", glm::vec3(0, 0, 0));
 
@@ -27,7 +35,7 @@ int main()
 	while (warunek)
 	{
 		auto queue = RedSunlight::EventManager::getInstance().checkForEvents();
-		std::cout << queue.size() << std::endl;
+		
 		while (!queue.empty()) {
 			auto event = queue.front();
 			queue.pop_front();
@@ -57,10 +65,12 @@ int main()
 		okno.clearToColor(r, g, b);
 
 		okno.drawElement(&trojkat);
-		okno.drawElement(&prostokat);
+		okno.drawElement(&prostokat1);
+		okno.drawElement(&prostokat2);
 		okno.drawElement(&tekst);
 		okno.drawElement(&myLover);
-
+		okno.drawElement(&kostka);
+		
 		okno.displayContent();
 	}
 

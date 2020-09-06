@@ -136,4 +136,5 @@ namespace RedSunlight {
 void framebuffer_size_callback(GLFWwindow* window, const int width, const int height)
 {
 	glViewport(0, 0, width, height);
+	GlobalInformation::getInstance().setScreenResolution(width, height);
 }

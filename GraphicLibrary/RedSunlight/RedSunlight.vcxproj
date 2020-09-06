@@ -117,6 +117,7 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Drawables\3D\Solid figures\cube.h" />
     <ClInclude Include="src\Event System\keyboard.h" />
     <ClInclude Include="src\Core\globalInformation.h" />
     <ClInclude Include="src\Drawables\2D\Sprite\sprite.h" />
@@ -135,6 +136,7 @@
     <ClInclude Include="src\Window\window.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Drawables\3D\Solid figures\cube.cpp" />
     <ClCompile Include="src\Event System\keyboard.cpp" />
     <ClCompile Include="src\Core\globalInformation.cpp" />
     <ClCompile Include="src\Drawables\2D\Sprite\sprite.cpp" />
