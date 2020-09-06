@@ -39,7 +39,8 @@ namespace RedSunlight {
 		eKeyArrowRight,
 		eKeyArrowLeft,
 		eKeyArrowDown,
-		eKeyArrowUp
+		eKeyArrowUp,
+		eKeyESC
 	};
 
 	class RED_API Keyboard {
@@ -60,7 +61,7 @@ namespace RedSunlight {
 
 		Window* m_window;
 		KeyCode m_lastPressedKey;
-		static const int keysCount = 30;
+		static const int keysCount = 31;
 		bool m_keysState[keysCount];
 		std::deque<Event> m_eventQueue;
 	};

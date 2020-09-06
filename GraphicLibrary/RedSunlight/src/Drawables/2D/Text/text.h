@@ -7,13 +7,19 @@ namespace RedSunlight {
 	class RED_API Font {
 	public:
 		Font(const char* fontFilePath, int size);
+		Font(const char* fontFilePath, int size, int color[4]);
 		Font(const Font&);
 		~Font();
 
-		void renderText(const std::pair<int, int>& pos, const std::string& text, const glm::vec3& color, float scale = 1.0f);
+		void renderText(const std::pair<int, int>& pos, const std::string& text);
+
+		void changeColor(int color[4]);
+		int* getColor();
 	private:
 		Shader* m_shader;
+		int m_color[4];
 		void createShader();
+		void setColor();
 
 		struct Character {
 			unsigned int textureID;  // ID handle of the glyph texture
@@ -29,21 +35,21 @@ namespace RedSunlight {
 	};
 
 	class RED_API Text 
-		: public IDrawable{
+		: public IDrawable {
 	public:
-		Text(int x, int y, const Font& font, const std::string& text, const glm::vec3& color = glm::vec3(255.0f, 255.0f, 255.0f));
+		Text(int x, int y, const std::string& text, const Font& font);
+		Text(int x, int y, const std::string& text, const Font& font, int color[4]);
 		~Text() = default;
-
+		 
 		void draw() override;
 		[[nodiscard]] DrawableType getDrawableType() const override;
 
 		std::string& getText();
-		glm::vec3& getColor();
+		int* getColor();
 	private:
 		int m_x, m_y;
 		Font m_font;
 		std::string m_text;
-		glm::vec3 m_color;
 	};
 
 }

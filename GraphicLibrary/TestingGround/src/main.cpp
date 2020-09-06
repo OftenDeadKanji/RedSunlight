@@ -10,11 +10,16 @@ int main()
 	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
 
 	//testowanie prymitywa - trójk¹t
-	glm::vec2 wierzcholki[] = {
-		glm::vec2(0, 0),
-		glm::vec2(200, 400),
-		glm::vec2(300,200)
-	};
+	int trLewy[2] = { 0,0 };
+	int trGorny[2] = { 200,400 };
+	int trPrawy[2] = { 300,200 };
+	int trKolor[4] = { 128, 0, 255, 255 };
+	RedSunlight::Traingle2D trojkat(trLewy, trGorny, trPrawy, trKolor);
+
+	int prLewy[2] = { 200, 500 };
+	int prPrawy[2] = { 400, 1000 };
+	int prKolor[4] = { 255, 127, 39, 255 };
+	RedSunlight::Rectangle2D prostokat(prLewy, prPrawy, prKolor);
 	
 	RedSunlight::Triangle2D trojkat(wierzcholki, glm::vec4(128, 0, 255, 255));
 	RedSunlight::Rectangle2D prostokat1(glm::vec2(500, 350), glm::vec2(700, 550), glm::vec4(255, 127, 39, 255));
@@ -22,9 +27,10 @@ int main()
 	RedSunlight::Cube kostka(200, 200, 0, 200, 0, 255, 140, 255);
 
 	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
-	RedSunlight::Text tekst(100, 800, czcionka, "Testowe", glm::vec3(0, 0, 0));
+	RedSunlight::Text tekst(100, 800, "Testowe", czcionka);
 
-	RedSunlight::Sprite myLover(500, 600, 251, 232, "res/images/kenobi.png", std::make_tuple(0, 0, 251, 232));
+	int wspTekstury[4] = { 0, 0, 251, 232 };
+	RedSunlight::Sprite myLover(500, 600, 125, 116, "res/images/kenobi.png", wspTekstury);
 
 	RedSunlight::EventManager::getInstance().startEventManager(&okno);
 	auto* mysz = RedSunlight::EventManager::getInstance().startMouse();
