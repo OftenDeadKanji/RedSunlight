@@ -8,9 +8,12 @@ namespace RedSunlight {
 
 #pragma region Font
 
-	Font::Font(const char* fontFilePath, const int size)
+	Font::Font(const char* fontFilePath, const int size) 
+		: m_color {0, 0, 0, 0}
 	{
 		createShader();
+		
+		setColor();
 
 		createCharacters(fontFilePath, size);
 
@@ -25,9 +28,34 @@ namespace RedSunlight {
 		glBindVertexArray(0);
 	}
 
-	Font::Font(const Font& font) : m_characters(font.m_characters)
+	Font::Font(const char* fontFilePath, int size, int color[4])
 	{
 		createShader();
+
+		for (int i = 0; i < 4; i++)
+			m_color[i] = color[i];
+
+		setColor();
+
+		createCharacters(fontFilePath, size);
+
+		glGenVertexArrays(1, &m_VAO);
+		glGenBuffers(1, &m_VBO);
+		glBindVertexArray(m_VAO);
+		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+		glBufferData(GL_ARRAY_BUFFER, sizeof(float) * 6 * 4, nullptr, GL_DYNAMIC_DRAW);
+		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), nullptr);
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+	}
+
+	Font::Font(const Font& font) 
+		: m_characters(font.m_characters)
+	{
+		createShader();
+
+		setColor();
 
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
@@ -42,54 +70,9 @@ namespace RedSunlight {
 
 	Font::~Font()
 	{
+		glDeleteBuffers(1, &m_VAO);
+		glDeleteBuffers(1, &m_VBO);
 		delete m_shader;
-	}
-
-	void Font::renderText(const std::pair<int, int>& pos, const std::string& text, const glm::vec3& color, const float scale)
-	{
-		// activate corresponding render state	
-		m_shader->useShader();
-		m_shader->setVec3f("textColor", color);
-		//glUniform3f(glGetUniformLocation(shader.ID, "textColor"), color.x, color.y, color.z);
-		glActiveTexture(GL_TEXTURE0);
-		glBindVertexArray(m_VAO);
-
-		float x = pos.first;
-		float y = pos.second;
-
-		for (auto c : text)
-		{
-			const Character ch = m_characters[c];
-
-			const float xpos = x + ch.bearing.x * scale;
-			const float ypos = y - (ch.size.y - ch.bearing.y) * scale;
-
-			const float w = ch.size.x * scale;
-			const float h = ch.size.y * scale;
-			// update VBO for each character
-			float vertices[6][4] = {
-				{ xpos,     ypos + h,   0.0f, 0.0f },
-				{ xpos,     ypos,       0.0f, 1.0f },
-				{ xpos + w, ypos,       1.0f, 1.0f },
-
-				{ xpos,     ypos + h,   0.0f, 0.0f },
-				{ xpos + w, ypos,       1.0f, 1.0f },
-				{ xpos + w, ypos + h,   1.0f, 0.0f }
-			};
-			// render glyph texture over quad
-			glBindTexture(GL_TEXTURE_2D, ch.textureID);
-			// update content of VBO memory
-			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
-
-			glBindBuffer(GL_ARRAY_BUFFER, 0);
-			// render quad
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
-			x += (ch.advance >> 6) * scale; // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
-		}
-		glBindVertexArray(0);
-		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
 	void Font::createShader()
@@ -99,11 +82,9 @@ namespace RedSunlight {
             layout (location = 0) in vec4 vertex; // <vec2 pos, vec2 tex>
             out vec2 TexCoords;
             
-            uniform mat4 projection;
-            
             void main()
             {
-                gl_Position = projection * vec4(vertex.xy, 1.0, 1.0);
+                gl_Position = vec4(vertex.xy, 1.0, 1.0);
                 TexCoords = vertex.zw;
             }
         )";
@@ -124,17 +105,8 @@ namespace RedSunlight {
         )";
 
 		m_shader = new Shader(ShaderCreationMethod::eShaderSourceCode, vertexSource, fragmentSource);
-
-		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
-		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), 0.0f, static_cast<float>(screenResolution.second));
-		//m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);
-
-		m_shader->useShader();
-		m_shader->setMat4("projection", m_proj);
-		//glUniformMatrix4fv(glGetUniformLocation(shader.ID, "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-
 	}
-
+	
 	void Font::createCharacters(const char* fontFilePath, int size)
 	{
 		FT_Library ft;
@@ -178,7 +150,7 @@ namespace RedSunlight {
 				continue;
 			}
 			// generate texture
-			unsigned int texture;
+			GLuint texture;
 			glGenTextures(1, &texture);
 			glBindTexture(GL_TEXTURE_2D, texture);
 			glTexImage2D(
@@ -212,31 +184,113 @@ namespace RedSunlight {
 		FT_Done_FreeType(ft);
 	}
 
+	void Font::setColor()
+	{
+		const glm::vec4 glColor(m_color[0] / 255.f, m_color[1] / 255.f, m_color[2] / 255.f, m_color[3] / 255.f);
+		m_shader->useShader();
+		m_shader->setVec4f("textColor", glColor);
+	}
+
+	void Font::changeColor(int color[4])
+	{
+		for (int i = 0; i < 4; i++)
+			m_color[i] = color[i];
+		
+		setColor();
+	}
+
+	int* Font::getColor()
+	{
+		return m_color;
+	}
+
+	void Font::renderText(const std::pair<int, int>& pos, const std::string& text)
+	{
+		// activate corresponding render state	
+		m_shader->useShader();
+		
+		glActiveTexture(GL_TEXTURE0);
+		glBindVertexArray(m_VAO);
+
+		float x = pos.first;
+		float y = pos.second;
+
+		for (auto c : text)
+		{
+			const Character ch = m_characters[c];
+
+			const float xpos = x + ch.bearing.x;
+			const float ypos = y - ch.bearing.y;
+
+			const std::pair<int, int> scrRes = GlobalInformation::getInstance().getScreenResolution();
+			
+			const float x1 = xpos / (0.5f * scrRes.first) - 1.0f;
+			const float x2 = (xpos + ch.size.x) / (0.5f * scrRes.first) - 1.0f;
+
+			const float y1 = 1.0f - (ypos + ch.size.y) / (0.5f * scrRes.second);
+			const float y2 = 1.0f - ypos / (0.5f * scrRes.second);
+			
+			// update VBO for each character
+			float vertices[6][4] = {
+				{ x1,	y1,		0.0f, 1.0f },
+				{ x1,	y2,		0.0f, 0.0f },
+				{ x2,	y2,		1.0f, 0.0f },
+
+				{ x1,	y1,		0.0f, 1.0f },
+				{ x2,	y2,		1.0f, 0.0f },
+				{ x2,	y1,		1.0f, 1.0f }
+			};
+			
+			// render glyph texture over quad
+			glBindTexture(GL_TEXTURE_2D, ch.textureID);
+			
+			// update content of VBO memory
+			glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices); // be sure to use glBufferSubData and not glBufferData
+
+			glBindBuffer(GL_ARRAY_BUFFER, 0);
+			
+			// render quad
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			
+			// now advance cursors for next glyph (note that advance is number of 1/64 pixels)
+			x += (ch.advance >> 6); // bitshift by 6 to get value in pixels (2^6 = 64 (divide amount of 1/64th pixels by 64 to get amount of pixels))
+		}
+		glBindVertexArray(0);
+		glBindTexture(GL_TEXTURE_2D, 0);
+	}
 #pragma endregion
 
 #pragma region Text
 
-	Text::Text(const int x, const int y, const Font& font, const std::string& text, const glm::vec3& color)
-	: m_x(x), m_y(y), m_font(font), m_text(text), m_color(glm::vec3(color.x / 255.0f, color.y / 255.0f, color.z / 255.0f))
+	Text::Text(int x, int y, const std::string& text, const Font& font)
+		: m_x(x), m_y(y), m_font(font), m_text(text)
 	{}
+
+	Text::Text(int x, int y, const std::string& text, const Font& font, int color[4])
+		: m_x(x), m_y(y), m_font(font), m_text(text)
+	{
+		m_font.changeColor(color);
+	}
 
 	std::string& Text::getText()
 	{
 		return m_text;
 	}
 
-	glm::vec3& Text::getColor()
+	int* Text::getColor()
 	{
-		return m_color;
+		return m_font.getColor();
 	}
 
 	void Text::draw()
 	{
-		//glEnable(GL_CULL_FACE);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-		m_font.renderText(std::pair<int, int>(m_x, m_y), m_text, m_color);
+		m_font.renderText(std::make_pair(m_x, m_y), m_text);
+
+		glDisable(GL_BLEND);
 	}
 
 	DrawableType Text::getDrawableType() const
@@ -245,4 +299,5 @@ namespace RedSunlight {
 	}
 
 #pragma endregion
+
 }

@@ -6,7 +6,7 @@ namespace RedSunlight {
 		: public IDrawable
 	{
 	public:
-		Sprite(int posX, int posY, int width, int height, const char* imageFilePath, const std::tuple<int, int, int, int>& imageCoords);
+		Sprite(int posX, int posY, int width, int height, const char* imageFilePath, int imageCoords[4]);
 		~Sprite();
 	private:
 		void createTexture(const char* imageFilePath);
@@ -21,7 +21,6 @@ namespace RedSunlight {
 		unsigned int m_texture;
 		Shader* m_shader;
 		unsigned int m_VBO, m_VAO, m_EBO;
-		glm::mat4 m_proj;
 	};
 
 }
