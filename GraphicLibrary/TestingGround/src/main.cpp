@@ -21,8 +21,6 @@ int main()
 	int prKolor[4] = { 255, 127, 39, 255 };
 	RedSunlight::Rectangle2D prostokat(prLewy, prPrawy, prKolor);
 
-	RedSunlight::Cube kostka(200, 200, 0, 200, 0, 255, 140, 255);
-
 	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
 	RedSunlight::Text tekst(100, 800, "Testowe", czcionka);
 
@@ -58,7 +56,6 @@ int main()
 		okno.drawElement(&trojkat);
 		okno.drawElement(&tekst);
 		okno.drawElement(&myLover);
-		okno.drawElement(&kostka);
 
 		okno.displayContent();
 	}
