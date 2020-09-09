@@ -33,7 +33,6 @@ int main()
 	auto* mysz = RedSunlight::EventManager::getInstance().startMouse();
 	auto* klawiatura = RedSunlight::EventManager::getInstance().startKeyboard();
 
-	auto r = 0, g = 162, b = 232;
 	auto warunek = true;
 	while (warunek)
 	{
@@ -46,26 +45,15 @@ int main()
 				warunek = false;
 			}
 			else if (event.type == RedSunlight::EventType::eKeyPressed) {
-				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyA) {
-					warunek = false;
-				}
 
-				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyK)
-					g = 0;
-				else if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyArrowDown)
-					g = 162;
 			}
 			else if (event.type == RedSunlight::EventType::eMouseButtonPressed) {
 				auto* mouseButtonsState = mysz->getButtonsState();
-				if (mouseButtonsState[0])
-					r = 255;
-				else if (mouseButtonsState[2])
-					r = 0;
 			}
 
 		}
 
-		okno.clearToColor(r, g, b);
+		okno.clearToColor(157, 217, 234);
 
 		okno.drawElement(&trojkat);
 		okno.drawElement(&tekst);
