@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <RedSunlight.h>
 
 int main()
@@ -9,21 +9,18 @@ int main()
 	//utworzenie okna
 	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
 
-	//testowanie prymitywa - trójk¹t
+	//testowanie prymitywa - trï¿½jkï¿½t
 	int trLewy[2] = { 0,0 };
 	int trGorny[2] = { 200,400 };
 	int trPrawy[2] = { 300,200 };
 	int trKolor[4] = { 128, 0, 255, 255 };
-	RedSunlight::Traingle2D trojkat(trLewy, trGorny, trPrawy, trKolor);
+	RedSunlight::Triangle2D trojkat(trLewy, trGorny, trPrawy, trKolor);
 
 	int prLewy[2] = { 200, 500 };
 	int prPrawy[2] = { 400, 1000 };
 	int prKolor[4] = { 255, 127, 39, 255 };
 	RedSunlight::Rectangle2D prostokat(prLewy, prPrawy, prKolor);
-	
-	RedSunlight::Triangle2D trojkat(wierzcholki, glm::vec4(128, 0, 255, 255));
-	RedSunlight::Rectangle2D prostokat1(glm::vec2(500, 350), glm::vec2(700, 550), glm::vec4(255, 127, 39, 255));
-	RedSunlight::Rectangle2D prostokat2(glm::vec2(700, 550), glm::vec2(900, 750), glm::vec4(255, 127, 39, 255));
+
 	RedSunlight::Cube kostka(200, 200, 0, 200, 0, 255, 140, 255);
 
 	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
@@ -41,7 +38,7 @@ int main()
 	while (warunek)
 	{
 		auto queue = RedSunlight::EventManager::getInstance().checkForEvents();
-		
+
 		while (!queue.empty()) {
 			auto event = queue.front();
 			queue.pop_front();
@@ -52,7 +49,7 @@ int main()
 				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyA) {
 					warunek = false;
 				}
-				
+
 				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyK)
 					g = 0;
 				else if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyArrowDown)
@@ -65,22 +62,20 @@ int main()
 				else if (mouseButtonsState[2])
 					r = 0;
 			}
-			
+
 		}
 
 		okno.clearToColor(r, g, b);
 
 		okno.drawElement(&trojkat);
-		okno.drawElement(&prostokat1);
-		okno.drawElement(&prostokat2);
 		okno.drawElement(&tekst);
 		okno.drawElement(&myLover);
 		okno.drawElement(&kostka);
-		
+
 		okno.displayContent();
 	}
 
-	//koñczenie
+	//koÅ„czenie
 	RedSunlight::terminate();
 	return 0;
 }

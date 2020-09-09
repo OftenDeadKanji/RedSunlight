@@ -23,11 +23,11 @@ namespace RedSunlight {
 		int m_color[4];
 	};
 
-	class RED_API Traingle2D
+	class RED_API Triangle2D
 		: public Primitive {
 	public:
-		Traingle2D(int left[2], int top[2], int right[2], int color[4]);
-		~Traingle2D() = default;
+		Triangle2D(int left[2], int top[2], int right[2], int color[4]);
+		~Triangle2D() = default;
 
 	private:
 		void draw() override;

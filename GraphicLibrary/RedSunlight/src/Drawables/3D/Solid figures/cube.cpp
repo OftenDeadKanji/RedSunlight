@@ -14,7 +14,7 @@ namespace RedSunlight {
 		const glm::vec3 upperBackLeft(m_pos.x - 0.5 * size, m_pos.y - 0.5 * size, m_pos.z - 0.5 * size);
 		const glm::vec3 lowerFrontRight(m_pos.x + 0.5 * size, m_pos.y + 0.5 * size, m_pos.z + 0.5 * size);
 
-		float vertices[] = {
+		GLfloat vertices[] = {
 			 //X	 //Y	 //Z		//R			//G			//B			//A
 			-0.5f,	-0.5f,	-0.5f,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
 			-0.5f,	-0.5f,	 0.5f,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
@@ -26,21 +26,8 @@ namespace RedSunlight {
 			 0.5f,	 0.5f,	-0.5f,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
 
 		};
-		
-		/*const float vertices[] = {
-			//X					//Y					//Z						//R			//G			//B			//A
-			upperBackLeft.x,	upperBackLeft.y,	upperBackLeft.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			upperBackLeft.x,	upperBackLeft.y,	lowerFrontRight.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			lowerFrontRight.x,	upperBackLeft.y,	lowerFrontRight.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			lowerFrontRight.x,	upperBackLeft.y,	upperBackLeft.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			upperBackLeft.x,	lowerFrontRight.y,	upperBackLeft.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			upperBackLeft.x,	lowerFrontRight.y,	lowerFrontRight.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			lowerFrontRight.x,	lowerFrontRight.y,	lowerFrontRight.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
-			lowerFrontRight.x,	lowerFrontRight.y,	upperBackLeft.z,		m_color.r,	m_color.g,	m_color.b,	m_color.a,
 
-		};*/
-
-		unsigned int indices[] = {
+		GLuint indices[] = {
 			0, 1, 2,	2, 3, 0,
 			1, 5, 6,	6, 2, 5,
 			2, 6, 7,	7, 3, 2,
@@ -133,7 +120,7 @@ namespace RedSunlight {
 		m_proj = glm::perspective(glm::radians(45.0f), static_cast<float>(resolution.first) / static_cast<float>(resolution.second), 0.1f, 100.0f);
 		m_view = translate(m_view, glm::vec3(0.0f, 0.0f, -3.0f));
 		//m_model = scale(m_model, glm::vec3(0.5f, 0.5f, 0.5f));
-		m_model = translate(m_model, glm::vec3(-0.5f, -0.5f, 0.0f));
+		//m_model = translate(m_model, glm::vec3(-0.5f, -0.5f, 0.0f));
 
 		
 		m_shader->useShader();

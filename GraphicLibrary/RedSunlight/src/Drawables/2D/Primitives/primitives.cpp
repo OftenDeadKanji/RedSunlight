@@ -75,7 +75,7 @@ namespace RedSunlight {
 
 	#pragma region Triangle2D
 
-	Traingle2D::Traingle2D(int left[2], int top[2], int right[2], int color[4])
+	Triangle2D::Triangle2D(int left[2], int top[2], int right[2], int color[4])
 		: Primitive(color)
 	{
 		auto scrRes = GlobalInformation::getInstance().getScreenResolution();
@@ -106,7 +106,7 @@ namespace RedSunlight {
 		glBindVertexArray(0);
 	}
 	
-	void Traingle2D::draw()
+	void Triangle2D::draw()
 	{
 		m_shader->useShader();
 

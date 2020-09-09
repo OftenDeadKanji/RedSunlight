@@ -9,6 +9,7 @@
 #include <string>
 #include <unordered_map>
 #include <utility>
+#include <iostream>
 
 #include "../../OtherLibs/headers/glad/glad.h"
 #include "../../OtherLibs/headers/GLFW/glfw3.h"
