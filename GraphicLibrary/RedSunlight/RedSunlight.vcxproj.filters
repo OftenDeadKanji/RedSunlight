@@ -63,9 +63,6 @@
     <ClInclude Include="src\Event System\keyboard.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
-    <ClInclude Include="src\Drawables\3D\Solid figures\cube.h">
-      <Filter>Pliki nagłówkowe</Filter>
-    </ClInclude>
     <ClInclude Include="src\Drawables\2D\Text\Font\font.h">
       <Filter>Pliki nagłówkowe</Filter>
     </ClInclude>
@@ -111,9 +108,6 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="src\Event System\keyboard.cpp">
-      <Filter>Pliki źródłowe</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Drawables\3D\Solid figures\cube.cpp">
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
     <ClCompile Include="src\Drawables\2D\Text\Font\font.cpp">
