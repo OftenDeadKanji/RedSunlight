@@ -38,16 +38,16 @@ namespace RedSunlight {
 	void Primitive::createShader()
 	{
 		const char* const vertexShader = R"(
-			#version 400 core  
+			#version 400 core 
 			layout (location = 0) in vec2 position;
 			uniform vec4 u_color;
 
 			out vec4 shapeColor;
 			
-			void main()  
-			{  
+			void main() 
+			{ 
 				shapeColor = u_color;
-			    gl_Position = vec4(position.x, position.y, -1.0, 1.0);  
+			  gl_Position = vec4(position.x, position.y, -1.0, 1.0); 
 			}
 		)";
 
@@ -57,9 +57,9 @@ namespace RedSunlight {
 			in vec4 shapeColor;
 			out vec4 color;
 			
-			void main()  
-			{  
-			    color = shapeColor;  
+			void main() 
+			{ 
+			  color = shapeColor; 
 			}
 		)";
 
@@ -89,9 +89,9 @@ namespace RedSunlight {
 		float glRightY = 1 - right[1] / (0.5 * scrRes.second);
 
 		GLfloat vertices[] = {
-			glLeftX,	glLeftY,	// left  
+			glLeftX,	glLeftY,	// left 
 			glTopX,		glTopY,		// right 
-			glRightX,	glRightY	// top  
+			glRightX,	glRightY	// top 
 		};
 
 		glBindVertexArray(m_VAO);

@@ -1,10 +1,10 @@
 #pragma once
-#include "../../../Shaders/shader.h"
+#include "../../shader.h"
 
 namespace RedSunlight {
 
 	//base class for primitives
-	class RED_API Primitive
+	class Primitive
 		: public IDrawable {
 	public:
 		explicit Primitive(int color[4]);
@@ -23,23 +23,19 @@ namespace RedSunlight {
 		int m_color[4];
 	};
 
-	class RED_API Triangle2D
+	class Triangle2D
 		: public Primitive {
 	public:
 		Triangle2D(int left[2], int top[2], int right[2], int color[4]);
 		~Triangle2D() = default;
-
-	private:
 		void draw() override;
 	};
 
-	class RED_API Rectangle2D
+	class Rectangle2D
 		: public Primitive {
 	public:
 		Rectangle2D(int upperLeft[2], int bottomRight[2], int color[4]);
 		~Rectangle2D() = default;
-
-	private:
 		void draw() override;
 	};
 

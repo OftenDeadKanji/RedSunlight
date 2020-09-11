@@ -1,10 +1,10 @@
 #pragma once
-#include "../../../Shaders/shader.h"
+#include "../../shader.h"
 #include "Font/font.h"
 
 namespace RedSunlight {
 
-	class RED_API Text 
+	class Text 
 		: public IDrawable {
 	public:
 		Text(int x, int y, const std::string& text, const Font& font);

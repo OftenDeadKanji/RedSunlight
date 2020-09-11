@@ -1,9 +1,8 @@
 #pragma once
-#include "../../../../Shaders/shader.h"
+#include "../../../shader.h"
 
 namespace RedSunlight {
-
-	class RED_API Font {
+	class Font {
 	public:
 		Font(const char* fontFilePath, int size);
 		Font(const char* fontFilePath, int size, int color[4]);
@@ -21,10 +20,10 @@ namespace RedSunlight {
 		void setColor();
 
 		struct Character {
-			unsigned int textureID;  // ID handle of the glyph texture
-			glm::ivec2   size;       // Size of glyph
-			glm::ivec2   bearing;    // Offset from baseline to left/top of glyph
-			unsigned int advance;    // Offset to advance to next glyph
+			unsigned int textureID; // ID handle of the glyph texture
+			glm::ivec2  size;    // Size of glyph
+			glm::ivec2  bearing;  // Offset from baseline to left/top of glyph
+			unsigned int advance;  // Offset to advance to next glyph
 		};
 		std::map<char, Character> m_characters;
 		void createCharacters(const char* fontFilePath, int size);

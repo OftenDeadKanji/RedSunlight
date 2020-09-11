@@ -2,18 +2,19 @@
 #include "../Primitives/primitives.h"
 
 namespace RedSunlight {
-	class RED_API Sprite final
+	class Sprite final
 		: public IDrawable
 	{
 	public:
 		Sprite(int posX, int posY, int width, int height, const char* imageFilePath, int imageCoords[4]);
 		~Sprite();
+		
+		void draw() override;
 	private:
 		void createTexture(const char* imageFilePath);
 		void createShader();
 
 		[[nodiscard]] DrawableType getDrawableType() const override;
-		void draw() override;
 
 		int m_x, m_y;
 		int m_width, m_height;

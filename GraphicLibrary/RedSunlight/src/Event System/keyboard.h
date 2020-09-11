@@ -9,7 +9,7 @@ namespace RedSunlight {
 
 #pragma region Keyboard
 
-	enum class RED_API KeyCode {
+	enum class KeyCode {
 		eKeyA,
 		eKeyB,
 		eKeyC,
@@ -43,7 +43,7 @@ namespace RedSunlight {
 		eKeyESC
 	};
 
-	class RED_API Keyboard {
+	class Keyboard {
 	public:
 		static Keyboard& getInstance();
 		

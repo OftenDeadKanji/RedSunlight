@@ -1,11 +1,11 @@
 #pragma once
 
-enum class RED_API ShaderCreationMethod {
+enum class ShaderCreationMethod {
 	eShaderFilePath,
 	eShaderSourceCode
 };
 
-class RED_API Shader
+class Shader
 {
 public:
 	Shader(ShaderCreationMethod method, const char* vertexShader, const char* fragmentShader, const char* geometryShader = nullptr);

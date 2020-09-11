@@ -9,7 +9,7 @@ int main()
 	//utworzenie okna
 	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
 
-	//testowanie prymitywa - tr�jk�t
+	//testowanie prymitywa - trójkąt
 	int trLewy[2] = { 0,0 };
 	int trGorny[2] = { 200,400 };
 	int trPrawy[2] = { 300,200 };
@@ -53,9 +53,13 @@ int main()
 
 		okno.clearToColor(157, 217, 234);
 
-		okno.drawElement(&trojkat);
-		okno.drawElement(&tekst);
-		okno.drawElement(&myLover);
+		//okno.drawElement(&trojkat);
+		//okno.drawElement(&tekst);
+		//okno.drawElement(&myLover);
+
+		trojkat.draw();
+		tekst.draw();
+		myLover.draw();
 
 		okno.displayContent();
 	}

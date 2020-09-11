@@ -127,7 +127,7 @@
     <ClInclude Include="src\Event System\eventManager.h" />
     <ClInclude Include="src\Event System\mouse.h" />
     <ClInclude Include="src\OtherLibs\headers\stb_image\stb_image.h" />
-    <ClInclude Include="src\Shaders\shader.h" />
+    <ClInclude Include="src\Drawables\shader.h" />
     <ClInclude Include="src\Drawables\2D\Primitives\primitives.h" />
     <ClInclude Include="src\Core\config.h" />
     <ClInclude Include="src\Core\PCH\pch.h" />
@@ -147,7 +147,7 @@
     <ClCompile Include="src\OtherLibs\sources\stb_image.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Shaders\shader.cpp" />
+    <ClCompile Include="src\Drawables\shader.cpp" />
     <ClCompile Include="src\Drawables\2D\Primitives\primitives.cpp" />
     <ClCompile Include="src\Core\PCH\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>

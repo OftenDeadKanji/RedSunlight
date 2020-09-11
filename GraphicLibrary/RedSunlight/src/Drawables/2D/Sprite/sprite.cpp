@@ -36,7 +36,7 @@ namespace RedSunlight {
 
 		GLuint indices[] = {
 		0, 1, 3, // first triangle
-		1, 2, 3  // second triangle
+		1, 2, 3 // second triangle
 		};
 
 		
@@ -110,8 +110,8 @@ namespace RedSunlight {
 		
 		void main()
 		{
-		    gl_Position = vec4(aPos.x, aPos.y, 1.0, 1.0);
-		    TexCoord = aTexCoord;
+		  gl_Position = vec4(aPos.x, aPos.y, 1.0, 1.0);
+		  TexCoord = aTexCoord;
 		}
 		)";
 
@@ -125,7 +125,7 @@ namespace RedSunlight {
 		
 		void main()
 		{
-		    FragColor = texture(ourTexture, TexCoord);
+		  FragColor = texture(ourTexture, TexCoord);
 		}
 		)";
 
