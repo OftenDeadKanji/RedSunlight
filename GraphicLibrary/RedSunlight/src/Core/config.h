@@ -1,11 +1,5 @@
 #pragma once
 
-#ifdef DLL_EXPORTS
-	#define RED_API //__declspec(dllexport)
-#else
-	#define RED_API //__declspec(dllimport)
-#endif
-
 #define UNKNOWN_OS 0
 #define WIN64 1
 #define WIN32 2

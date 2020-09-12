@@ -87,53 +87,20 @@ namespace RedSunlight {
 		m_properties.height = newHeight;
 	}
 
-	/*void Window::setViewport(const int newX, const int newY, const int newWidth, const int newHeight)
-	{
-		m_viewportX = newX;
-		m_viewportY = newY;
-		m_viewportWidth = newWidth;
-		m_viewportHeight = newHeight;
-
-		glViewport(m_viewportX, m_viewportY, m_viewportWidth, m_viewportHeight);
-	}*/
-
 	void Window::displayContent()
 	{
-		glEnable(GL_DEPTH_TEST);
-
-		while (!m_drawables[DrawableType::eElement3D].empty()) {
-			auto* drawable3D = m_drawables[DrawableType::eElement3D].front();
-			drawable3D->draw();
-			m_drawables[DrawableType::eElement3D].pop();
-		}
-
-		glDisable(GL_DEPTH_TEST);
-
-		while (!m_drawables[DrawableType::eElement2D].empty()) {
-			auto* drawable2D = m_drawables[DrawableType::eElement2D].front();
-			drawable2D->draw();
-			m_drawables[DrawableType::eElement2D].pop();
-		}
-
 		glfwSwapBuffers(m_window);
 	}
-
-	
 
 	void Window::clearToColor(const int red, const int green, const int blue)
 	{
 		glClearColor(static_cast<float>(red) / 255.f, static_cast<float>(green) / 255.f, static_cast<float>(blue) / 255.f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-
-	void Window::drawElement(IDrawable* drawable)
-	{
-		m_drawables[drawable->getDrawableType()].push(drawable);
-	}
 }
-
 
 void framebuffer_size_callback(GLFWwindow* window, const int width, const int height)
 {
 	glViewport(0, 0, width, height);
+	GlobalInformation::getInstance().setScreenResolution(width, height);
 }

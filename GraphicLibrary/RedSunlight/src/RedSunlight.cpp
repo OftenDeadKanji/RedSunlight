@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "RedSunlight.h"
 
-int RED_API RedSunlight::init()
+int RedSunlight::init()
 {
 	if constexpr (OS == WIN64) {
 		if (glfwInit() == GLFW_TRUE)
@@ -12,7 +12,7 @@ int RED_API RedSunlight::init()
 		return RED_FAIL;
 }
 
-RED_API void RedSunlight::terminate()
+ void RedSunlight::terminate()
 {
 	glfwTerminate();
 }

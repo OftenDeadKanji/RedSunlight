@@ -1,4 +1,4 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <RedSunlight.h>
 
 int main()
@@ -9,25 +9,33 @@ int main()
 	//utworzenie okna
 	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
 
-	//testowanie prymitywa - trójk¹t
-	RedSunlight::Traingle2D trojkat(glm::vec2(0, 0), glm::vec2(200, 400), glm::vec2(300,200), glm::vec4(128, 0, 255, 255));
-	RedSunlight::Rectangle2D prostokat(glm::vec2(200, 500), glm::vec2(400, 1000), glm::vec4(255, 127, 39, 255));
-	
-	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
-	RedSunlight::Text tekst(100, 800, czcionka, "Testowe", glm::vec3(0, 0, 0));
+	//testowanie prymitywa - trÃ³jkÄ…t
+	int trLewy[2] = { 0,0 };
+	int trGorny[2] = { 200,400 };
+	int trPrawy[2] = { 300,200 };
+	int trKolor[4] = { 128, 0, 255, 255 };
+	RedSunlight::Triangle2D trojkat(trLewy, trGorny, trPrawy, trKolor);
 
-	RedSunlight::Sprite myLover(500, 600, 251, 232, "res/images/kenobi.png", std::make_tuple(0, 0, 251, 232));
+	int prLewy[2] = { 200, 500 };
+	int prPrawy[2] = { 400, 1000 };
+	int prKolor[4] = { 255, 127, 39, 255 };
+	RedSunlight::Rectangle2D prostokat(prLewy, prPrawy, prKolor);
+
+	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
+	RedSunlight::Text tekst(100, 800, "Testowe", czcionka);
+
+	int wspTekstury[4] = { 0, 0, 251, 232 };
+	RedSunlight::Sprite myLover(500, 600, 125, 116, "res/images/kenobi.png", wspTekstury);
 
 	RedSunlight::EventManager::getInstance().startEventManager(&okno);
 	auto* mysz = RedSunlight::EventManager::getInstance().startMouse();
 	auto* klawiatura = RedSunlight::EventManager::getInstance().startKeyboard();
 
-	auto r = 0, g = 162, b = 232;
 	auto warunek = true;
 	while (warunek)
 	{
 		auto queue = RedSunlight::EventManager::getInstance().checkForEvents();
-		std::cout << queue.size() << std::endl;
+
 		while (!queue.empty()) {
 			auto event = queue.front();
 			queue.pop_front();
@@ -35,36 +43,28 @@ int main()
 				warunek = false;
 			}
 			else if (event.type == RedSunlight::EventType::eKeyPressed) {
-				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyA) {
-					warunek = false;
-				}
-				
-				if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyK)
-					g = 0;
-				else if (klawiatura->getLastPressedKey() == RedSunlight::KeyCode::eKeyArrowDown)
-					g = 162;
+
 			}
 			else if (event.type == RedSunlight::EventType::eMouseButtonPressed) {
 				auto* mouseButtonsState = mysz->getButtonsState();
-				if (mouseButtonsState[0])
-					r = 255;
-				else if (mouseButtonsState[2])
-					r = 0;
 			}
-			
+
 		}
 
-		okno.clearToColor(r, g, b);
+		okno.clearToColor(157, 217, 234);
 
-		okno.drawElement(&trojkat);
-		okno.drawElement(&prostokat);
-		okno.drawElement(&tekst);
-		okno.drawElement(&myLover);
+		//okno.drawElement(&trojkat);
+		//okno.drawElement(&tekst);
+		//okno.drawElement(&myLover);
+
+		trojkat.draw();
+		tekst.draw();
+		myLover.draw();
 
 		okno.displayContent();
 	}
 
-	//koñczenie
+	//koÅ„czenie
 	RedSunlight::terminate();
 	return 0;
 }

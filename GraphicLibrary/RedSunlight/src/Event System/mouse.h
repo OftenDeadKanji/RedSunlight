@@ -10,13 +10,13 @@ namespace RedSunlight {
 	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
 	
 #pragma region Mouse
-	enum class RED_API MouseButtons {
+	enum class MouseButtons {
 		eLeft,
 		eMiddle,
 		eRight
 	};
 	
-	class RED_API Mouse {
+	class Mouse {
 	public:
 		Mouse(const Mouse&) = delete;
 		Mouse(Mouse&&) = delete;

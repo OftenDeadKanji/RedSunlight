@@ -12,7 +12,7 @@ namespace RedSunlight {
 	
 #pragma region Event things
 
-	class RED_API EventManager {
+	class EventManager {
 	public:
 		EventManager(const EventManager&) = delete;
 		EventManager(EventManager&&) = delete;

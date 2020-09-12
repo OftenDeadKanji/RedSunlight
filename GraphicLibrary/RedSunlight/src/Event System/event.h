@@ -2,7 +2,7 @@
 
 namespace RedSunlight
 {
-	enum class RED_API EventType {
+	enum class EventType {
 		eNone,
 		eMouseButtonPressed,
 		eMouseButtonReleased,
@@ -11,7 +11,7 @@ namespace RedSunlight
 		eWindowClose
 	};
 
-	struct RED_API Event {
+	struct Event {
 		Event();
 		explicit Event(EventType type);
 

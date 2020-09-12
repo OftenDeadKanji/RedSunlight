@@ -6,13 +6,13 @@ namespace RedSunlight {
 
 	class EventManager;
 
-	enum class RED_API WindowMode {
+	enum class WindowMode {
 		eWindowed,
 		eFullscreen,
 		eBorderless
 	};
 
-	struct RED_API WindowProperties {
+	struct WindowProperties {
 		WindowProperties(int width, int height, const char* title, WindowMode mode);
 		WindowProperties(const WindowProperties&) = default;
 		WindowProperties(WindowProperties&&) = default;
@@ -26,7 +26,7 @@ namespace RedSunlight {
 		WindowMode mode;
 	};
 	
-	class RED_API Window
+	class Window
 	{
 	public:
 		explicit Window(const WindowProperties& properties);
@@ -37,11 +37,9 @@ namespace RedSunlight {
 		Window& operator=(Window&) = delete;
 		Window& operator=(Window&&) noexcept;
 		
-		//void setViewport(int newX, int newY, int newWidth, int newHeight);
 		void resize(int newWidth, int newHeight);
 
 		static void clearToColor(int red, int green, int blue);
-		void drawElement(IDrawable*);
 		void displayContent();
 
 	private:
@@ -53,7 +51,6 @@ namespace RedSunlight {
 
 		WindowProperties m_properties;
 		GLFWwindow* m_window;
-		std::unordered_map<DrawableType, std::queue<IDrawable*>> m_drawables;
 	};
 }
 

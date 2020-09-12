@@ -7,7 +7,6 @@
 #include "Event System/eventManager.h"
 
 namespace RedSunlight {
-
-	int RED_API init();
-	void RED_API terminate();
+	int init();
+	void terminate();
 }

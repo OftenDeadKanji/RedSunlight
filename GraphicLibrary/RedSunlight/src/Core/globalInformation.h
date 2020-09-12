@@ -1,6 +1,6 @@
 #pragma once
 
-class RED_API GlobalInformation {
+class GlobalInformation {
 public:
 	GlobalInformation(const GlobalInformation&) = delete;
 	

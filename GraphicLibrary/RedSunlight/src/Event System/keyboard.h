@@ -9,7 +9,7 @@ namespace RedSunlight {
 
 #pragma region Keyboard
 
-	enum class RED_API KeyCode {
+	enum class KeyCode {
 		eKeyA,
 		eKeyB,
 		eKeyC,
@@ -39,10 +39,11 @@ namespace RedSunlight {
 		eKeyArrowRight,
 		eKeyArrowLeft,
 		eKeyArrowDown,
-		eKeyArrowUp
+		eKeyArrowUp,
+		eKeyESC
 	};
 
-	class RED_API Keyboard {
+	class Keyboard {
 	public:
 		static Keyboard& getInstance();
 		
@@ -60,7 +61,7 @@ namespace RedSunlight {
 
 		Window* m_window;
 		KeyCode m_lastPressedKey;
-		static const int keysCount = 30;
+		static const int keysCount = 31;
 		bool m_keysState[keysCount];
 		std::deque<Event> m_eventQueue;
 	};

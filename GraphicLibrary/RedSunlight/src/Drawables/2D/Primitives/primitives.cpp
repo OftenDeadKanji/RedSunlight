@@ -5,45 +5,17 @@ namespace RedSunlight {
 
 	#pragma region Primitive
 
-	Primitive::Primitive(const glm::vec4& color)
-		: m_color(glm::vec4(color.x / 255.f, color.y / 255.f, color.z / 255.f, color.w / 255.f)),
-		m_proj(glm::mat4(1.0f)), m_view(glm::mat4(1.0f)), m_model(glm::mat4(1.0f))
+	Primitive::Primitive(int color[4])
+		: m_color{ color[0], color[1], color[2], color[3] }
 	{
 		glGenVertexArrays(1, &m_VAO);
 		glGenBuffers(1, &m_VBO);
 
-		const auto* const vertexShader = R"(
-			#version 400 core  
-			layout (location = 0) in vec3 position;
-			
-			uniform mat4 model;
-			uniform mat4 view;
-			uniform mat4 projection;
+		createShader();
 
-			void main()  
-			{  
-			    gl_Position = projection * view * model * vec4(position, 1.0);  
-			}
-		)";
-
-		const auto* const fragmentShader = R"(
-			#version 400 core 
-
-			uniform vec4 shapeColor;
-			out vec4 color;
-			
-			void main()  
-			{  
-			    color = shapeColor;  
-			}
-		)";
-
-		m_shader = new Shader(ShaderCreationMethod::eShaderSourceCode, vertexShader, fragmentShader);
-
-		const auto screenResolution = GlobalInformation::getInstance().getScreenResolution();
-
-		m_proj = glm::ortho(0.0f, static_cast<float>(screenResolution.first), static_cast<float>(screenResolution.second), 0.0f, 0.1f, 100.0f);
-		m_view = glm::translate(m_view, glm::vec3(0.0f, 0.0f, -1.0f));
+		m_shader->useShader();
+		const glm::vec4 glColor(m_color[0] / 255.f, m_color[1] / 255.f, m_color[2] / 255.f, m_color[3] / 255.f);
+		m_shader->setVec4f("u_color", glColor);
 	}
 
 	Primitive::~Primitive()
@@ -52,6 +24,46 @@ namespace RedSunlight {
 		glDeleteBuffers(1, &m_VBO);
 
 		delete m_shader;
+	}
+
+	void Primitive::changeColor(int color[4])
+	{
+		for (int i = 0; i < 4; i++)
+			m_color[i] = color[i];
+
+		const glm::vec4 glColor(m_color[0] / 255.f, m_color[1] / 255.f, m_color[2] / 255.f, m_color[3] / 255.f);
+		m_shader->setVec4f("u_color", glColor);
+	}
+
+	void Primitive::createShader()
+	{
+		const char* const vertexShader = R"(
+			#version 400 core 
+			layout (location = 0) in vec2 position;
+			uniform vec4 u_color;
+
+			out vec4 shapeColor;
+			
+			void main() 
+			{ 
+				shapeColor = u_color;
+			  gl_Position = vec4(position.x, position.y, -1.0, 1.0); 
+			}
+		)";
+
+		const char* const fragmentShader = R"(
+			#version 400 core 
+
+			in vec4 shapeColor;
+			out vec4 color;
+			
+			void main() 
+			{ 
+			  color = shapeColor; 
+			}
+		)";
+
+		m_shader = new Shader(ShaderCreationMethod::eShaderSourceCode, vertexShader, fragmentShader);
 	}
 
 	DrawableType Primitive::getDrawableType() const
@@ -63,13 +75,23 @@ namespace RedSunlight {
 
 	#pragma region Triangle2D
 
-	Traingle2D::Traingle2D(const glm::vec2& left, const glm::vec2& top, const glm::vec2& right, const glm::vec4& color)
+	Triangle2D::Triangle2D(int left[2], int top[2], int right[2], int color[4])
 		: Primitive(color)
 	{
-		float vertices[] = {
-			left.x,		left.y,		0.0f, // left  
-			top.x,		top.y,		0.0f, // right 
-			right.x,	right.y,	0.0f  // top  
+		auto scrRes = GlobalInformation::getInstance().getScreenResolution();
+		float glLeftX = left[0] / (0.5 * scrRes.first) - 1;
+		float glLeftY = 1 - left[1] / (0.5 * scrRes.second);
+		
+		float glTopX = top[0] / (0.5 * scrRes.first) - 1;
+		float glTopY = 1 - top[1] / (0.5 * scrRes.second);
+
+		float glRightX = right[0] / (0.5 * scrRes.first) - 1;
+		float glRightY = 1 - right[1] / (0.5 * scrRes.second);
+
+		GLfloat vertices[] = {
+			glLeftX,	glLeftY,	// left 
+			glTopX,		glTopY,		// right 
+			glRightX,	glRightY	// top 
 		};
 
 		glBindVertexArray(m_VAO);
@@ -77,20 +99,16 @@ namespace RedSunlight {
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(nullptr));
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), static_cast<GLvoid*>(nullptr));
 		glEnableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 		glBindVertexArray(0);
 	}
 	
-	void Traingle2D::draw()
+	void Triangle2D::draw()
 	{
 		m_shader->useShader();
-		m_shader->setVec4f("shapeColor", m_color);
-		m_shader->setMat4("model", m_model);
-		m_shader->setMat4("view", m_view);
-		m_shader->setMat4("projection", m_proj);
 
 		glBindVertexArray(m_VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
@@ -100,17 +118,24 @@ namespace RedSunlight {
 
 	#pragma region Rectangle2D
 
-	Rectangle2D::Rectangle2D(const glm::vec2& upperLeft, const glm::vec2& bottomRight, const glm::vec4& color)
+	Rectangle2D::Rectangle2D(int upperLeft[2], int lowerRight[2], int color[4])
 		: Primitive(color)
 	{
-		float vertices[] = {
-			upperLeft.x,	upperLeft.y,	0.0f,
-			bottomRight.x,	upperLeft.y,	0.0f,
-			bottomRight.x,	bottomRight.y,	0.0f,
+		auto scrRes = GlobalInformation::getInstance().getScreenResolution();
+		float glUpperLeftX = upperLeft[0] / (0.5 * scrRes.first) - 1;
+		float glUpperLeftY = 1 - upperLeft[1] / (0.5 * scrRes.second);
+		
+		float glLowerRightX = lowerRight[0] / (0.5 * scrRes.first) - 1;
+		float glLowerRightY = 1 - lowerRight[1] / (0.5 * scrRes.second);
 
-			bottomRight.x,	bottomRight.y,	0.0f,
-			upperLeft.x,	bottomRight.y,	0.0f,
-			upperLeft.x,	upperLeft.y,	0.0f
+		float vertices[] = {
+			glUpperLeftX,	glUpperLeftY,
+			glLowerRightX,	glUpperLeftY,
+			glLowerRightX,	glLowerRightY,
+
+			glLowerRightX,	glLowerRightY,
+			glUpperLeftX,	glLowerRightY,
+			glUpperLeftX,	glUpperLeftY
 		};
 
 		glBindVertexArray(m_VAO);
@@ -118,7 +143,7 @@ namespace RedSunlight {
 		glBindBuffer(GL_ARRAY_BUFFER, m_VBO);
 		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), static_cast<GLvoid*>(nullptr));
+		glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(GLfloat), static_cast<GLvoid*>(nullptr));
 		glEnableVertexAttribArray(0);
 
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -128,10 +153,6 @@ namespace RedSunlight {
 	void Rectangle2D::draw()
 	{
 		m_shader->useShader();
-		m_shader->setVec4f("shapeColor", m_color);
-		m_shader->setMat4("model", m_model);
-		m_shader->setMat4("view", m_view);
-		m_shader->setMat4("projection", m_proj);
 
 		glBindVertexArray(m_VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 6);
