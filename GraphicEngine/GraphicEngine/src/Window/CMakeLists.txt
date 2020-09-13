@@ -1,0 +1,9 @@
+target_sources(Engine
+        PRIVATE
+        window.cpp
+        windowProperties.cpp
+        PUBLIC
+        window.h
+        windowProperties.h
+        windowMode.h
+)
