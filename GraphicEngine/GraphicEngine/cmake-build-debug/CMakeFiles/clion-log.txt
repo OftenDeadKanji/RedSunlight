@@ -1,0 +1,11 @@
+"D:\Programy\Programowanie\JetBrains\CLion 2020.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - NMake Makefiles" D:\Users\Kanjiklub\Documents\GitHub\RedSunlight\GraphicEngine\GraphicEngine
+CMake Error at CMakeLists.txt:9 (add_subdirectory):
+  The source directory
+
+    D:/Users/Kanjiklub/Documents/GitHub/RedSunlight/GraphicEngine/GraphicEngine/ThirdParty/glfw
+
+  does not contain a CMakeLists.txt file.
+
+
+-- Configuring incomplete, errors occurred!
+See also "D:/Users/Kanjiklub/Documents/GitHub/RedSunlight/GraphicEngine/GraphicEngine/cmake-build-debug/CMakeFiles/CMakeOutput.log".
