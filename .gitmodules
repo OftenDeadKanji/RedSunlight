@@ -1,3 +1,0 @@
-[submodule "GraphicEngine/GraphicEngine/ThirdParty/glfw"]
-	path = GraphicEngine/GraphicEngine/ThirdParty/glfw
-	url = https://github.com/glfw/glfw.git
