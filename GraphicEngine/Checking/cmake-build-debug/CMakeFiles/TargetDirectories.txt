@@ -1,3 +1,0 @@
-D:/Users/Kanjiklub/Documents/GitHub/RedSunlight/GraphicEngine/Checking/cmake-build-debug/CMakeFiles/Checking.dir
-D:/Users/Kanjiklub/Documents/GitHub/RedSunlight/GraphicEngine/Checking/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/Users/Kanjiklub/Documents/GitHub/RedSunlight/GraphicEngine/Checking/cmake-build-debug/CMakeFiles/rebuild_cache.dir

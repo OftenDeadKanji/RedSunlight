@@ -1,4 +1,0 @@
-"D:\Programy\Programowanie\JetBrains\CLion 2020.2\bin\cmake\win\bin\cmake.exe" -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - NMake Makefiles" D:\Users\Kanjiklub\Documents\GitHub\RedSunlight\GraphicEngine\Checking
--- Configuring done
--- Generating done
--- Build files have been written to: D:/Users/Kanjiklub/Documents/GitHub/RedSunlight/GraphicEngine/Checking/cmake-build-debug
