@@ -1,57 +1,48 @@
 #pragma once
+#include "windowProperties.h"
 #include "../Event System/eventManager.h"
 
-
 namespace RedSunlight {
-
-	class EventManager;
-
-	enum class WindowMode {
-		eWindowed,
-		eFullscreen,
-		eBorderless
-	};
-
-	struct WindowProperties {
-		WindowProperties(int width, int height, const char* title, WindowMode mode);
-		WindowProperties(const WindowProperties&) = default;
-		WindowProperties(WindowProperties&&) = default;
-		~WindowProperties() = default;
-
-		WindowProperties& operator=(const WindowProperties&) = default;
-		WindowProperties& operator=(WindowProperties&&) = default;
-		
-		int width, height;
-		std::string title;
-		WindowMode mode;
-	};
-	
-	class Window
-	{
+	class Window {
 	public:
-		explicit Window(const WindowProperties& properties);
-		Window(Window&) = delete;
-		Window(Window&&) noexcept;
+		explicit Window(WindowProperties properties);
+		Window(const Window&) = delete;
+		Window(Window&&) = delete;
 		~Window();
 
-		Window& operator=(Window&) = delete;
-		Window& operator=(Window&&) noexcept;
+		Window& operator=(const Window&) = delete;
+		Window& operator=(Window&&) = delete;
+
+		static void clearToColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a = 255);
+		static void clearToColorf(float r, float g, float b, float a = 1.0f);
+		void displayContent() const;
+
+		GLFWwindow* getInnerWindow();
+		[[nodiscard]] bool isResizable() const;
 		
-		void resize(int newWidth, int newHeight);
+		void setResizable(bool);
 
-		static void clearToColor(int red, int green, int blue);
-		void displayContent();
+		void attachEventManager(EventManager& manager);
 
+		void windowCloseCallback(bool shouldCloseWindow);
+		void keyCallback(int key, int scancode, int action, int mods);
+		void mouseButtonCallback(int button, int action, int mods);
+		void cursorPositionCallback(double x, double y);
+		
 	private:
-		friend class EventManager;
-		friend class Mouse;
-		friend class Keyboard;
+		void initOpenGL();
 
-		void createWindow();
+		void createGLFWWindow();
+		void createWindowedWindow();
+		void createFullscreenWindow();
+		void createFullscreenWindowedWindow();
+		
+		void centerWindow();
 
-		WindowProperties m_properties;
-		GLFWwindow* m_window;
+		WindowProperties properties;
+		GLFWwindow* window = nullptr;
+		EventManager* eventManager = nullptr;
+
+		bool resizable = false;
 	};
 }
-
-void framebuffer_size_callback(GLFWwindow* window, int width, int height);

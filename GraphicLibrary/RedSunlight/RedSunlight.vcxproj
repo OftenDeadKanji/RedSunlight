@@ -47,6 +47,7 @@
     <OutDir>$(SolutionDir)bin\$(Configuration)\</OutDir>
     <LibraryPath>$(ProjectDir)src\OtherLibs\libs;$(LibraryPath)</LibraryPath>
     <IncludePath>$(ProjectDir)src\OtherLibs\headers;$(IncludePath)</IncludePath>
+    <TargetName>$(ProjectName)d</TargetName>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -58,7 +59,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DLL_EXPORTS;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RED_LIB;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -79,7 +80,7 @@
       </Message>
     </PostBuildEvent>
     <Lib>
-      <AdditionalDependencies>glfw3.lib;opengl32.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glfw3d.lib;opengl32.lib;freetyped.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>$(ProjectDir)src\OtherLibs\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Lib>
   </ItemDefinitionGroup>
@@ -89,7 +90,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>DLL_EXPORTS;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RED_LIB;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PrecompiledHeader>Use</PrecompiledHeader>
@@ -118,14 +119,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\Drawables\2D\Text\Font\font.h" />
-    <ClInclude Include="src\Event System\keyboard.h" />
+    <ClInclude Include="src\Event System\Event\eventType.h" />
+    <ClInclude Include="src\Event System\Keyboard\keyboard.h" />
     <ClInclude Include="src\Core\globalInformation.h" />
     <ClInclude Include="src\Drawables\2D\Sprite\sprite.h" />
     <ClInclude Include="src\Drawables\2D\Text\text.h" />
     <ClInclude Include="src\Drawables\IDrawable.h" />
-    <ClInclude Include="src\Event System\event.h" />
+    <ClInclude Include="src\Event System\Event\event.h" />
     <ClInclude Include="src\Event System\eventManager.h" />
-    <ClInclude Include="src\Event System\mouse.h" />
+    <ClInclude Include="src\Event System\Keyboard\keyCode.h" />
+    <ClInclude Include="src\Event System\Mouse\mouse.h" />
+    <ClInclude Include="src\Event System\Mouse\mouseButtonsCodes.h" />
     <ClInclude Include="src\OtherLibs\headers\stb_image\stb_image.h" />
     <ClInclude Include="src\Drawables\shader.h" />
     <ClInclude Include="src\Drawables\2D\Primitives\primitives.h" />
@@ -134,16 +138,18 @@
     <ClInclude Include="src\Core\status.h" />
     <ClInclude Include="src\RedSunlight.h" />
     <ClInclude Include="src\Window\window.h" />
+    <ClInclude Include="src\Window\windowMode.h" />
+    <ClInclude Include="src\Window\windowProperties.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Drawables\2D\Text\Font\font.cpp" />
-    <ClCompile Include="src\Event System\keyboard.cpp" />
+    <ClCompile Include="src\Event System\Keyboard\keyboard.cpp" />
     <ClCompile Include="src\Core\globalInformation.cpp" />
     <ClCompile Include="src\Drawables\2D\Sprite\sprite.cpp" />
     <ClCompile Include="src\Drawables\2D\Text\text.cpp" />
-    <ClCompile Include="src\Event System\event.cpp" />
+    <ClCompile Include="src\Event System\Event\event.cpp" />
     <ClCompile Include="src\Event System\eventManager.cpp" />
-    <ClCompile Include="src\Event System\mouse.cpp" />
+    <ClCompile Include="src\Event System\Mouse\mouse.cpp" />
     <ClCompile Include="src\OtherLibs\sources\stb_image.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
@@ -159,6 +165,7 @@
     </ClCompile>
     <ClCompile Include="src\RedSunlight.cpp" />
     <ClCompile Include="src\Window\window.cpp" />
+    <ClCompile Include="src\Window\windowProperties.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

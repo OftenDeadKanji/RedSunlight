@@ -1,106 +1,203 @@
 #include "pch.h"
 #include "window.h"
 
-namespace RedSunlight {
-
-	WindowProperties::WindowProperties(const int width, const int height, const char* title, const WindowMode mode)
-		: width(width), height(height), title(title), mode(mode)
-	{}
-	
-	Window::Window(const WindowProperties& properties)
-		: m_properties(properties), m_window(nullptr)
+namespace RedSunlight
+{
+#pragma region GLFW Callbacks
+	void framebuffer_size_callback(GLFWwindow* window, const int width, const int height)
 	{
-		//OpenGL settings
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 0);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-		createWindow();
-		
-		if (m_window != nullptr) {
-			glfwMakeContextCurrent(m_window);
-
-			if (gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress))) {
-				glViewport(0, 0, properties.width, properties.height);
-
-				glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
-
-				GlobalInformation::getInstance().setScreenResolution(properties.width, properties.height);
-			}
-			else {
-				glfwDestroyWindow(m_window);
-				//TODO RED_TODO - wyj¹tek dla z³ego GLAD
-			}
-		}
-		//TODO RED_TODO - wyj¹tek dla m_window == NULL
+		glViewport(0, 0, width, height);
 	}
 
-	void Window::createWindow()
+	void window_close_callback(GLFWwindow* window)
 	{
-		if (m_properties.mode == WindowMode::eWindowed) {
-			m_window = glfwCreateWindow(m_properties.width, m_properties.height, m_properties.title.c_str(), nullptr, nullptr);
-		}
-		else {
-			auto* const monitor = glfwGetPrimaryMonitor();
-
-			if (m_properties.mode == WindowMode::eFullscreen) {
-				m_window = glfwCreateWindow(m_properties.width, m_properties.height, m_properties.title.c_str(), monitor, nullptr);
-			}
-			else if (m_properties.mode == WindowMode::eBorderless) {
-				const auto* videoMode = glfwGetVideoMode(monitor);
-
-				glfwWindowHint(GLFW_RED_BITS, videoMode->redBits);
-				glfwWindowHint(GLFW_GREEN_BITS, videoMode->greenBits);
-				glfwWindowHint(GLFW_BLUE_BITS, videoMode->blueBits);
-				glfwWindowHint(GLFW_REFRESH_RATE, videoMode->refreshRate);
-
-				m_window = glfwCreateWindow(videoMode->width, videoMode->height, m_properties.title.c_str(), monitor, nullptr);
-			}
+		auto* userWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if (userWindow)
+		{
+			userWindow->windowCloseCallback(glfwWindowShouldClose(window));
 		}
 	}
-	
-	Window::Window(Window&& window) noexcept
-		: m_properties(std::move(window.m_properties)), m_window(window.m_window)
+
+	void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 	{
-		window.m_window = nullptr;
+		auto* userWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if (userWindow)
+		{
+			userWindow->keyCallback(key, scancode, action, mods);
+		}
+	}
+
+	void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+	{
+		auto* userWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if (userWindow)
+		{
+			userWindow->mouseButtonCallback(button, action, mods);
+		}
+	}
+
+	void cursor_position_callback(GLFWwindow* window, double xpos, double ypos)
+	{
+		auto* userWindow = reinterpret_cast<Window*>(glfwGetWindowUserPointer(window));
+		if (userWindow)
+		{
+			userWindow->cursorPositionCallback(xpos, ypos);
+		}
+	}
+#pragma endregion
+
+	Window::Window(WindowProperties properties)
+		: properties(std::move(properties))
+	{
+		initOpenGL();
+		createGLFWWindow();
+
+		if (gladLoadGLLoader(reinterpret_cast<GLADloadproc>(glfwGetProcAddress)))
+		{
+			glViewport(0, 0, properties.width, properties.height);
+
+			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+
+			GlobalInformation::getInstance().setScreenResolution(properties.width, properties.height);
+		}
 	}
 
 	Window::~Window()
 	{
-		if (m_window != nullptr)
-			glfwDestroyWindow(m_window);
+		glfwDestroyWindow(window);
 	}
 
-	Window& Window::operator=(Window&& window) noexcept
+	void Window::centerWindow()
 	{
-		m_properties = std::move(window.m_properties);
-		m_window = window.m_window;
-		window.m_window = nullptr;
+		const auto monitor = glfwGetPrimaryMonitor();
+		if (!monitor)
+			return;
 
-		return *this;
+		const auto mode = glfwGetVideoMode(monitor);
+		if (!mode)
+			return;
+
+		int monitorX, monitorY;
+		glfwGetMonitorPos(monitor, &monitorX, &monitorY);
+
+		int windowWidth, windowHeight;
+		glfwGetWindowSize(window, &windowWidth, &windowHeight);
+
+		glfwSetWindowPos(window, monitorX + (mode->width - windowWidth) / 2, monitorY + (mode->height - windowHeight) / 2);
 	}
 
-	void Window::resize(const int newWidth, const int newHeight)
+	void Window::clearToColor(unsigned char r, unsigned char g, unsigned char b, unsigned char a)
 	{
-		glfwSetWindowSize(m_window, newWidth, newHeight);
-		m_properties.width = newWidth;
-		m_properties.height = newHeight;
-	}
-
-	void Window::displayContent()
-	{
-		glfwSwapBuffers(m_window);
-	}
-
-	void Window::clearToColor(const int red, const int green, const int blue)
-	{
-		glClearColor(static_cast<float>(red) / 255.f, static_cast<float>(green) / 255.f, static_cast<float>(blue) / 255.f, 1.0f);
+		glClearColor(r / 255.f, g / 255.f, b / 255.f, a / 255.f);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
-}
 
-void framebuffer_size_callback(GLFWwindow* window, const int width, const int height)
-{
-	glViewport(0, 0, width, height);
-	GlobalInformation::getInstance().setScreenResolution(width, height);
+	void Window::clearToColorf(float r, float g, float b, float a)
+	{
+		glClearColor(r, g, b, a);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	}
+
+	void Window::displayContent() const
+	{
+		glfwSwapBuffers(window);
+	}
+
+	GLFWwindow* Window::getInnerWindow()
+	{
+		return window;
+	}
+
+	bool Window::isResizable() const
+	{
+		return resizable;
+	}
+
+	void Window::setResizable(bool value)
+	{
+		resizable = value;
+		glfwSetWindowAttrib(window, GLFW_RESIZABLE, value);
+	}
+
+	void Window::attachEventManager(EventManager& manager)
+	{
+		eventManager = &manager;
+
+		glfwSetWindowCloseCallback(window, window_close_callback);
+		glfwSetKeyCallback(window, key_callback);
+		glfwSetMouseButtonCallback(window, mouse_button_callback);
+		glfwSetCursorPosCallback(window, cursor_position_callback);
+
+		glfwSetWindowUserPointer(window, reinterpret_cast<void*>(this));
+	}
+	
+	void Window::initOpenGL()
+	{
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
+		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 6);
+		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	}
+
+	void Window::createGLFWWindow()
+	{
+		switch (properties.mode)
+		{
+		case WindowMode::eWindowed:
+			createWindowedWindow();
+			break;
+		case WindowMode::eFullscreen:
+			createFullscreenWindow();
+			break;
+		case WindowMode::eWindowedFullscreen:
+			createFullscreenWindowedWindow();
+			break;
+		}
+		glfwSetWindowAttrib(window, GLFW_RESIZABLE, resizable);
+		glfwMakeContextCurrent(window);
+	}
+
+	void Window::createWindowedWindow()
+	{
+		window = glfwCreateWindow(properties.width, properties.height, properties.title.c_str(), nullptr, nullptr);
+		centerWindow();
+	}
+
+	void Window::createFullscreenWindow()
+	{
+		auto* const monitor = glfwGetPrimaryMonitor();
+		window = glfwCreateWindow(properties.width, properties.height, properties.title.c_str(), monitor, nullptr);
+	}
+
+	void Window::createFullscreenWindowedWindow()
+	{
+		auto* const monitor = glfwGetPrimaryMonitor();
+		const auto* videoMode = glfwGetVideoMode(monitor);
+
+		glfwWindowHint(GLFW_RED_BITS, videoMode->redBits);
+		glfwWindowHint(GLFW_GREEN_BITS, videoMode->greenBits);
+		glfwWindowHint(GLFW_BLUE_BITS, videoMode->blueBits);
+		glfwWindowHint(GLFW_REFRESH_RATE, videoMode->refreshRate);
+
+		window = glfwCreateWindow(videoMode->width, videoMode->height, properties.title.c_str(), monitor, nullptr);
+	}
+	
+	void Window::windowCloseCallback(bool shouldCloseWindow)
+	{
+		eventManager->windowCloseCallback(shouldCloseWindow);
+	}
+
+	void Window::keyCallback(int key, int scancode, int action, int mods)
+	{
+		eventManager->keyCallback(key, scancode, action, mods);
+	}
+
+	void Window::mouseButtonCallback(int button, int action, int mods)
+	{
+		eventManager->mouseButtonCallback(button, action, mods);
+	}
+
+	void Window::cursorPositionCallback(double x, double y)
+	{
+		eventManager->cursorPositionCallback(x, y);
+	}
 }

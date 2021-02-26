@@ -5,66 +5,57 @@ int main()
 {
 	if (RedSunlight::init() == RED_FAIL)
 		return -1;
-
-	//utworzenie okna
-	RedSunlight::Window okno(RedSunlight::WindowProperties(1600, 900, "Testujemy", RedSunlight::WindowMode::eWindowed));
-
-	//testowanie prymitywa - trójkąt
-	int trLewy[2] = { 0,0 };
-	int trGorny[2] = { 200,400 };
-	int trPrawy[2] = { 300,200 };
-	int trKolor[4] = { 128, 0, 255, 255 };
-	RedSunlight::Triangle2D trojkat(trLewy, trGorny, trPrawy, trKolor);
+	
+	RedSunlight::Window window(RedSunlight::WindowProperties(1600, 900, RedSunlight::WindowMode::eWindowed, "Testing"));
+	
+	int trLeft[2] = { 0,0 };
+	int trUp[2] = { 200,400 };
+	int trRight[2] = { 300,200 };
+	int trColor[4] = { 128, 0, 255, 255 };
+	RedSunlight::Triangle2D triangle(trLeft, trUp, trRight, trColor);
 
 	int prLewy[2] = { 200, 500 };
 	int prPrawy[2] = { 400, 1000 };
 	int prKolor[4] = { 255, 127, 39, 255 };
-	RedSunlight::Rectangle2D prostokat(prLewy, prPrawy, prKolor);
+	RedSunlight::Rectangle2D rectangle(prLewy, prPrawy, prKolor);
 
-	RedSunlight::Font czcionka("res/fonts/Segan.ttf", 50);
-	RedSunlight::Text tekst(100, 800, "Testowe", czcionka);
+	RedSunlight::Font font("res/fonts/Segan.ttf", 50);
+	RedSunlight::Text text(100, 450, "Just for test", font);
 
 	int wspTekstury[4] = { 0, 0, 251, 232 };
 	RedSunlight::Sprite myLover(500, 600, 125, 116, "res/images/kenobi.png", wspTekstury);
 
-	RedSunlight::EventManager::getInstance().startEventManager(&okno);
-	auto* mysz = RedSunlight::EventManager::getInstance().startMouse();
-	auto* klawiatura = RedSunlight::EventManager::getInstance().startKeyboard();
+	RedSunlight::EventManager eventManager;
+	window.attachEventManager(eventManager);
+	
+	RedSunlight::Mouse mouse;
+	eventManager.registerMouse(mouse);
+	RedSunlight::Keyboard keyboard;
+	eventManager.registerKeyboard(keyboard);
 
-	auto warunek = true;
-	while (warunek)
+	auto loopCondition = true;
+	while (loopCondition)
 	{
-		auto queue = RedSunlight::EventManager::getInstance().checkForEvents();
-
-		while (!queue.empty()) {
-			auto event = queue.front();
-			queue.pop_front();
-			if (event.type == RedSunlight::EventType::eWindowClose) {
-				warunek = false;
-			}
-			else if (event.type == RedSunlight::EventType::eKeyPressed) {
-
-			}
-			else if (event.type == RedSunlight::EventType::eMouseButtonPressed) {
-				auto* mouseButtonsState = mysz->getButtonsState();
+		RedSunlight::EventManager::checkForEvents();
+		
+		while (!eventManager.isEventQueueEmpty()) {
+			const auto event = eventManager.popEvent();
+			if (event.type == RedSunlight::EventType::eWindowClosed) {
+				loopCondition = false;
 			}
 
 		}
 
-		okno.clearToColor(157, 217, 234);
-
-		//okno.drawElement(&trojkat);
-		//okno.drawElement(&tekst);
-		//okno.drawElement(&myLover);
-
-		trojkat.draw();
-		tekst.draw();
+		RedSunlight::Window::clearToColor(157, 217, 234);
+		
+		triangle.draw();
+		text.draw();
 		myLover.draw();
 
-		okno.displayContent();
+		window.displayContent();
 	}
 
-	//kończenie
+	//cleaning
 	RedSunlight::terminate();
 	return 0;
 }

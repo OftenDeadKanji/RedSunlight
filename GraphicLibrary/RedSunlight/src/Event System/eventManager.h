@@ -1,42 +1,40 @@
 #pragma once
-#include "../Window/window.h"
-#include "event.h"
-#include "mouse.h"
-#include "keyboard.h"
+#include "Event/event.h"
+#include "Keyboard/keyboard.h"
+#include "Mouse/mouse.h"
 
 namespace RedSunlight {
 
-	class Window;
-	class Mouse;
-	class Keyboard;
-	
-#pragma region Event things
-
 	class EventManager {
 	public:
-		EventManager(const EventManager&) = delete;
-		EventManager(EventManager&&) = delete;
-		
-		static EventManager& getInstance();
-		void startEventManager(Window* window);
-		[[nodiscard]] Mouse* startMouse() const;
-		[[nodiscard]] Keyboard* startKeyboard() const;
+		EventManager() = default;
+		~EventManager() = default;
+		EventManager(const EventManager&);
+		EventManager(EventManager&&) noexcept;
 
-		std::deque<Event>& checkForEvents();
+		EventManager& operator=(const EventManager&);
+		EventManager& operator=(EventManager&&) noexcept;
+
+		static void checkForEvents();
+		Event popEvent();
+		bool isEventQueueEmpty() const;
+		void clearEventQueue();
+
+		void registerKeyboard(Keyboard&);
+		void registerMouse(Mouse&);
+
+		void windowCloseCallback(bool shouldCloseWindow);
+
+		void keyCallback(int key, int scancode, int action, int mods);
+
+		void mouseButtonCallback(int button, int action, int mods);
+		void cursorPositionCallback(double x, double y);
+
 	private:
-		EventManager();
-		
-		void processWindowEvents();
-		void processKeyboardEvents();
-		void processMouseEvents();
-
-		std::deque<Event> m_eventQueue;
-		Window* m_window;
-		Mouse* m_mouse;
-		Keyboard* m_keyboard;
+		std::list<Event> eventQueue;
+		Keyboard* keyboard = nullptr;
+		Mouse* mouse = nullptr;
 	};
-
-#pragma endregion
 
 
 

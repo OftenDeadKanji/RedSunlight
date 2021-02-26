@@ -79,14 +79,14 @@ namespace RedSunlight {
 		: Primitive(color)
 	{
 		auto scrRes = GlobalInformation::getInstance().getScreenResolution();
-		float glLeftX = left[0] / (0.5 * scrRes.first) - 1;
-		float glLeftY = 1 - left[1] / (0.5 * scrRes.second);
+		float glLeftX = left[0] / (0.5f * scrRes.first) - 1;
+		float glLeftY = 1 - left[1] / (0.5f * scrRes.second);
 		
-		float glTopX = top[0] / (0.5 * scrRes.first) - 1;
-		float glTopY = 1 - top[1] / (0.5 * scrRes.second);
+		float glTopX = top[0] / (0.5f * scrRes.first) - 1;
+		float glTopY = 1 - top[1] / (0.5f * scrRes.second);
 
-		float glRightX = right[0] / (0.5 * scrRes.first) - 1;
-		float glRightY = 1 - right[1] / (0.5 * scrRes.second);
+		float glRightX = right[0] / (0.5f * scrRes.first) - 1;
+		float glRightY = 1 - right[1] / (0.5f* scrRes.second);
 
 		GLfloat vertices[] = {
 			glLeftX,	glLeftY,	// left 
@@ -122,11 +122,11 @@ namespace RedSunlight {
 		: Primitive(color)
 	{
 		auto scrRes = GlobalInformation::getInstance().getScreenResolution();
-		float glUpperLeftX = upperLeft[0] / (0.5 * scrRes.first) - 1;
-		float glUpperLeftY = 1 - upperLeft[1] / (0.5 * scrRes.second);
+		float glUpperLeftX = upperLeft[0] / (0.5f * scrRes.first) - 1;
+		float glUpperLeftY = 1 - upperLeft[1] / (0.5f * scrRes.second);
 		
-		float glLowerRightX = lowerRight[0] / (0.5 * scrRes.first) - 1;
-		float glLowerRightY = 1 - lowerRight[1] / (0.5 * scrRes.second);
+		float glLowerRightX = lowerRight[0] / (0.5f * scrRes.first) - 1;
+		float glLowerRightY = 1 - lowerRight[1] / (0.5f * scrRes.second);
 
 		float vertices[] = {
 			glUpperLeftX,	glUpperLeftY,
